@@ -97,6 +97,639 @@
 			::-webkit-scrollbar-thumb:hover {
 				background: #475569;
 			}
+
+			/* ROMANTIC MEMORIES GALLERY CUSTOM CSS */
+			.memories-section {
+				position: relative;
+			}
+
+			.polaroid-gallery {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+				gap: 2rem;
+				justify-items: center;
+			}
+
+			.polaroid-card {
+				background: rgba(15, 23, 42, 0.45);
+				backdrop-filter: blur(16px);
+				-webkit-backdrop-filter: blur(16px);
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 12px;
+				padding-bottom: 24px;
+				border-radius: 12px;
+				box-shadow:
+					0 10px 30px rgba(0, 0, 0, 0.5),
+					0 0 15px rgba(251, 191, 36, 0.03);
+				transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+				cursor: pointer;
+				position: relative;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				max-width: 280px;
+			}
+
+			/* Shiny glare effect */
+			.polaroid-card::after {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: -150%;
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(
+					90deg,
+					transparent,
+					rgba(255, 255, 255, 0.08),
+					transparent
+				);
+				transform: skewX(-20deg);
+				transition: 0.75s;
+			}
+
+			.polaroid-card:hover::after {
+				left: 150%;
+			}
+
+			/* Subtle organic tilt styles */
+			.polaroid-card.tilt-left-sm {
+				transform: rotate(-1deg);
+			}
+			.polaroid-card.tilt-right-sm {
+				transform: rotate(1deg);
+			}
+			.polaroid-card.tilt-left-md {
+				transform: rotate(-2deg);
+			}
+			.polaroid-card.tilt-right-md {
+				transform: rotate(2deg);
+			}
+
+			.polaroid-card:hover {
+				transform: translateY(-12px) scale(1.04) rotate(0deg) !important;
+				box-shadow:
+					0 20px 40px rgba(0, 0, 0, 0.6),
+					0 0 30px rgba(251, 191, 36, 0.15);
+				border-color: rgba(251, 191, 36, 0.25);
+				z-index: 30;
+			}
+
+			.polaroid-image-container {
+				width: 100%;
+				aspect-ratio: 4/5;
+				border-radius: 8px;
+				overflow: hidden;
+				position: relative;
+				background: #090d16;
+			}
+
+			.polaroid-image {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+			}
+
+			.polaroid-card:hover .polaroid-image {
+				transform: scale(1.08);
+			}
+
+			.polaroid-caption {
+				margin-top: 16px;
+				text-align: center;
+				font-family: 'Playfair Display', serif;
+				font-style: italic;
+				font-size: 0.95rem;
+				color: rgba(254, 243, 199, 0.85); /* amber-100 */
+				letter-spacing: 0.02em;
+				transition: color 0.4s;
+			}
+
+			.polaroid-card:hover .polaroid-caption {
+				color: rgba(251, 191, 36, 0.95); /* amber-400 */
+			}
+
+			/* Floating Heart Styles */
+			.floating-heart {
+				position: absolute;
+				pointer-events: none;
+				font-size: 1.2rem;
+				color: rgba(239, 68, 68, 0.7); /* red-500 style */
+				filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.4));
+				animation: floatHeart 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+				z-index: 999;
+			}
+
+			@keyframes floatHeart {
+				0% {
+					transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+					opacity: 0;
+				}
+				15% {
+					opacity: 1;
+					transform: translate(-50%, -80%) scale(1.2)
+						rotate(var(--rot-angle, 15deg));
+				}
+				100% {
+					transform: translate(calc(-50% + var(--dx, 20px)), -150px) scale(0.8)
+						rotate(var(--rot-angle-end, -15deg));
+					opacity: 0;
+				}
+			}
+
+			/* PREMIUM LIGHTBOX STYLES */
+			.lightbox-container {
+				position: fixed;
+				inset: 0;
+				z-index: 100;
+				background-color: rgba(2, 6, 23, 0.85);
+				backdrop-filter: blur(24px);
+				-webkit-backdrop-filter: blur(24px);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				opacity: 0;
+				transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+				pointer-events: none;
+				padding: 1.5rem;
+			}
+
+			.lightbox-container.active {
+				opacity: 1;
+				pointer-events: auto;
+			}
+
+			.lightbox-content {
+				position: relative;
+				max-width: 90vw;
+				max-height: 75vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				transform: scale(0.92);
+				transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+			}
+
+			.lightbox-container.active .lightbox-content {
+				transform: scale(1);
+			}
+
+			.lightbox-img-frame {
+				background: rgba(15, 23, 42, 0.65);
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 14px;
+				padding-bottom: 28px;
+				border-radius: 16px;
+				box-shadow:
+					0 25px 60px rgba(0, 0, 0, 0.8),
+					0 0 40px rgba(251, 191, 36, 0.1);
+				max-width: 100%;
+				max-height: 65vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.lightbox-image {
+				max-width: 100%;
+				max-height: 52vh;
+				object-fit: contain;
+				border-radius: 8px;
+				box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+			}
+
+			.lightbox-caption {
+				margin-top: 18px;
+				font-family: 'Playfair Display', serif;
+				font-style: italic;
+				font-size: 1.1rem;
+				color: rgba(254, 243, 199, 0.9);
+				text-align: center;
+				letter-spacing: 0.03em;
+				max-width: 480px;
+				line-height: 1.4;
+			}
+
+			.lightbox-nav-btn {
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 52px;
+				height: 52px;
+				border-radius: 50%;
+				background: rgba(15, 23, 42, 0.6);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+				color: rgba(251, 191, 36, 0.8);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				z-index: 110;
+				backdrop-filter: blur(8px);
+			}
+
+			.lightbox-nav-btn:hover {
+				background: rgba(251, 191, 36, 0.15);
+				border-color: rgba(251, 191, 36, 0.4);
+				color: rgba(251, 191, 36, 1);
+				box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+			}
+
+			.lightbox-prev {
+				left: -80px;
+			}
+
+			.lightbox-next {
+				right: -80px;
+			}
+
+			.lightbox-close-btn {
+				position: absolute;
+				top: -60px;
+				right: 0;
+				color: rgba(255, 255, 255, 0.6);
+				background: rgba(15, 23, 42, 0.6);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				backdrop-filter: blur(8px);
+			}
+
+			.lightbox-close-btn:hover {
+				color: rgba(255, 255, 255, 0.95);
+				background: rgba(239, 68, 68, 0.2);
+				border-color: rgba(239, 68, 68, 0.4);
+				box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+			}
+
+			@media (max-width: 768px) {
+				.lightbox-prev {
+					left: -10px;
+					width: 44px;
+					height: 44px;
+				}
+				.lightbox-next {
+					right: -10px;
+					width: 44px;
+					height: 44px;
+				}
+				.lightbox-close-btn {
+					top: -50px;
+					right: 0px;
+				}
+				.lightbox-content {
+					max-width: 95vw;
+				}
+			}
+
+			/* FLOATING MEMORY BUBBLE WIDGET */
+			.floating-memory-widget {
+				position: fixed;
+				bottom: 24px;
+				right: 24px;
+				width: 56px;
+				height: 56px;
+				border-radius: 50%;
+				background: linear-gradient(
+					135deg,
+					rgba(15, 23, 42, 0.8),
+					rgba(20, 110, 120, 0.4)
+				);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(251, 191, 36, 0.25);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				z-index: 40;
+				box-shadow:
+					0 8px 32px rgba(0, 0, 0, 0.4),
+					0 0 15px rgba(251, 191, 36, 0.2);
+				transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+				animation: floatingPulse 4s infinite ease-in-out;
+			}
+
+			.floating-memory-widget:hover {
+				transform: scale(1.12) rotate(15deg);
+				box-shadow:
+					0 12px 40px rgba(0, 0, 0, 0.5),
+					0 0 25px rgba(251, 191, 36, 0.4);
+				border-color: rgba(251, 191, 36, 0.5);
+			}
+
+			.floating-memory-widget svg {
+				width: 24px;
+				height: 24px;
+				color: rgba(251, 191, 36, 0.85);
+				transition: transform 0.3s;
+			}
+
+			.floating-memory-widget:hover svg {
+				transform: scale(1.1);
+				color: rgba(251, 191, 36, 1);
+			}
+
+			@keyframes floatingPulse {
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(-8px);
+				}
+			}
+
+			/* Floating polaroid pop-up card */
+			.bubble-polaroid-popup {
+				position: fixed;
+				bottom: 96px;
+				right: 24px;
+				background: rgba(15, 23, 42, 0.95);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				border: 1px solid rgba(251, 191, 36, 0.3);
+				padding: 10px;
+				padding-bottom: 18px;
+				border-radius: 12px;
+				box-shadow:
+					0 20px 50px rgba(0, 0, 0, 0.7),
+					0 0 30px rgba(251, 191, 36, 0.15);
+				width: 220px;
+				z-index: 45;
+				transform: translateY(40px) scale(0.6) rotate(10deg);
+				opacity: 0;
+				pointer-events: none;
+				transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			}
+
+			.bubble-polaroid-popup.active {
+				transform: translateY(0) scale(1) rotate(-3deg);
+				opacity: 1;
+				pointer-events: auto;
+			}
+
+			.bubble-pop-image-frame {
+				width: 100%;
+				aspect-ratio: 1;
+				border-radius: 6px;
+				overflow: hidden;
+				background: #090d16;
+			}
+
+			.bubble-pop-image {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.bubble-pop-caption {
+				margin-top: 10px;
+				text-align: center;
+				font-family: 'Playfair Display', serif;
+				font-style: italic;
+				font-size: 0.8rem;
+				color: rgba(254, 243, 199, 0.85);
+				line-height: 1.3;
+			}
+
+			.bubble-pop-heart {
+				position: absolute;
+				top: -10px;
+				left: 50%;
+				transform: translateX(-50%);
+				font-size: 1.5rem;
+				animation: heartbeat 1.5s infinite;
+			}
+
+			@keyframes heartbeat {
+				0%,
+				100% {
+					transform: translateX(-50%) scale(1);
+				}
+				50% {
+					transform: translateX(-50%) scale(1.2);
+				}
+			}
+
+			/* 3D GLOBE CAROUSEL STYLES */
+			.globe-3d-wrapper {
+				perspective: 1000px;
+				position: relative;
+				width: 100%;
+				min-height: 480px;
+			}
+
+			.globe-3d-container {
+				width: 100%;
+				height: 460px; /* Tăng chiều cao lên 460px để tạo khoảng giãn cách hoàn hảo cho các tầng ảnh của quả địa cầu không tràn ra ngoài */
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transform-style: preserve-3d;
+			}
+
+			.globe-3d-sphere {
+				position: relative;
+				width: 100px;
+				height: 130px;
+				transform-style: preserve-3d;
+				transform: rotateX(-12deg) rotateY(0deg);
+				animation: rotateGlobe 38s linear infinite;
+				transition: transform 0.5s ease-out;
+			}
+
+			/* Pause animation on hover */
+			.globe-3d-sphere:hover {
+				animation-play-state: paused;
+			}
+
+			@keyframes rotateGlobe {
+				from {
+					transform: rotateX(-12deg) rotateY(0deg);
+				}
+				to {
+					transform: rotateX(-12deg) rotateY(360deg);
+				}
+			}
+
+			.globe-photo-card {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background: transparent;
+				border: 1.5px solid rgba(251, 191, 36, 0.4);
+				border-radius: 8px;
+				padding: 0; /* No padding */
+				box-shadow:
+					0 8px 20px rgba(0, 0, 0, 0.6),
+					0 0 12px rgba(251, 191, 36, 0.15);
+				transform-style: preserve-3d;
+				backface-visibility: visible;
+				cursor: pointer;
+				transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+				overflow: hidden;
+				/* Position on the sphere using CSS Variables */
+				transform: rotateY(var(--rotY)) rotateX(var(--rotX))
+					translateZ(var(--tz)) scale(var(--s, 1));
+			}
+
+			.globe-photo-card:hover {
+				border-color: rgba(251, 191, 36, 0.95);
+				box-shadow:
+					0 15px 35px rgba(0, 0, 0, 0.7),
+					0 0 25px rgba(251, 191, 36, 0.4);
+				--tz: calc(var(--base-tz) + 40px) !important;
+				--s: 1.25;
+				z-index: 50;
+			}
+
+			.globe-photo-img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transition: transform 0.5s;
+			}
+
+			.globe-photo-card:hover .globe-photo-img {
+				transform: scale(1.08);
+			}
+
+			/* Make 3D globe fully responsive */
+			@media (max-width: 640px) {
+				.globe-3d-wrapper {
+					min-height: 380px;
+				}
+				.globe-3d-container {
+					height: 300px; /* Tăng chiều cao mobile lên 300px để tạo khoảng cách an toàn cho các tầng ảnh */
+				}
+				.globe-3d-sphere {
+					width: 60px;
+					height: 78px;
+				}
+			}
+
+			/* MAGICAL MEMORY STREAM TRANSITION */
+			.memory-stream-container {
+				position: fixed;
+				inset: 0;
+				z-index: 48;
+				pointer-events: none;
+				overflow: hidden;
+				display: none;
+			}
+
+			.memory-stream-container.active {
+				display: block;
+			}
+
+			.floating-stream-card {
+				position: absolute;
+				width: 120px;
+				height: 156px;
+				background: rgba(15, 23, 42, 0.7);
+				backdrop-filter: blur(8px);
+				border: 1.5px solid rgba(251, 191, 36, 0.4);
+				border-radius: 10px;
+				padding: 6px;
+				padding-bottom: 16px;
+				box-shadow:
+					0 15px 35px rgba(0, 0, 0, 0.6),
+					0 0 20px rgba(251, 191, 36, 0.2);
+				opacity: 0;
+				transform-style: preserve-3d;
+				will-change: transform, opacity;
+			}
+
+			.floating-stream-img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				border-radius: 6px;
+			}
+
+			/* Keyframes for different paths */
+			@keyframes flyPath1 {
+				0% {
+					transform: translate(-150px, 80vh) rotate(-20deg) scale(0.6);
+					opacity: 0;
+				}
+				15% {
+					opacity: 0.85;
+				}
+				85% {
+					opacity: 0.85;
+				}
+				100% {
+					transform: translate(110vw, 10vh) rotate(15deg) scale(1.1);
+					opacity: 0;
+				}
+			}
+
+			@keyframes flyPath2 {
+				0% {
+					transform: translate(110vw, 75vh) rotate(25deg) scale(0.5);
+					opacity: 0;
+				}
+				20% {
+					opacity: 0.85;
+				}
+				80% {
+					opacity: 0.85;
+				}
+				100% {
+					transform: translate(-150px, -5vh) rotate(-15deg) scale(1);
+					opacity: 0;
+				}
+			}
+
+			@keyframes flyPath3 {
+				0% {
+					transform: translate(30vw, 110vh) rotate(-10deg) scale(0.5);
+					opacity: 0;
+				}
+				15% {
+					opacity: 0.9;
+				}
+				85% {
+					opacity: 0.9;
+				}
+				100% {
+					transform: translate(65vw, -150px) rotate(20deg) scale(1.1);
+					opacity: 0;
+				}
+			}
+
+			@keyframes flyPath4 {
+				0% {
+					transform: translate(-150px, -5vh) rotate(15deg) scale(0.7);
+					opacity: 0;
+				}
+				20% {
+					opacity: 0.8;
+				}
+				80% {
+					opacity: 0.8;
+				}
+				100% {
+					transform: translate(110vw, 85vh) rotate(-20deg) scale(1);
+					opacity: 0;
+				}
+			}
 		</style>
 	</head>
 	<body
@@ -130,8 +763,14 @@
 			id="introOverlay"
 			class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-all duration-1000"
 		>
+			<!-- Ambient Memory Stream for Intro Overlay -->
+			<div
+				id="introAmbientPhotos"
+				class="absolute inset-0 pointer-events-none overflow-hidden z-0"
+			></div>
+
 			<!-- Floating moon -->
-			<div class="relative mb-8 animate-float">
+			<div class="relative mb-8 animate-float z-10">
 				<div
 					class="w-24 h-24 rounded-full bg-amber-100 glow-box-gold flex items-center justify-center relative overflow-hidden"
 				>
@@ -169,17 +808,19 @@
 			</div>
 
 			<h1
-				class="serif-font text-3xl md:text-4xl text-amber-100 glow-gold font-light tracking-wide text-center px-6 max-w-xl"
+				class="serif-font text-3xl md:text-4xl text-amber-100 glow-gold font-light tracking-wide text-center px-6 max-w-xl relative z-10"
 			>
 				Gửi Em Bé của anh...
 			</h1>
-			<p class="text-slate-400 text-sm mt-3 tracking-widest uppercase">
+			<p
+				class="text-slate-400 text-sm mt-3 tracking-widest uppercase relative z-10"
+			>
 				Khu vườn đang chờ em mở cửa
 			</p>
 
 			<button
 				id="enterGardenBtn"
-				class="mt-12 px-8 py-3 rounded-full border border-amber-300/30 text-amber-200 hover:text-amber-100 hover:bg-amber-500/10 hover:border-amber-300/60 transition-all duration-500 tracking-widest text-xs uppercase flex items-center gap-3 group"
+				class="mt-12 px-8 py-3 rounded-full border border-amber-300/30 text-amber-200 hover:text-amber-100 hover:bg-amber-500/10 hover:border-amber-300/60 transition-all duration-500 tracking-widest text-xs uppercase flex items-center gap-3 group relative z-10"
 			>
 				<span>Bước vào khu vườn</span>
 				<svg
@@ -382,6 +1023,76 @@
 								>Bé Ngoan<br />01/06</span
 							>
 						</div>
+					</div>
+				</section>
+
+				<!-- SECTION: ROMANTIC MEMORIES GALLERY -->
+				<section class="space-y-8 memories-section">
+					<div class="text-center">
+						<span
+							class="text-xs text-amber-400 uppercase tracking-widest font-mono bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20"
+							style="padding: 10px"
+						>
+							Album Hồi Ức
+						</span>
+						<h3 class="serif-font text-3xl text-slate-100 font-light mt-3 mb-2">
+							Bảo Tàng Ký Ức Của Chúng Ta
+						</h3>
+						<p class="text-sm text-slate-400 max-w-lg mx-auto">
+							Mỗi bức ảnh là một mảnh ghép hạnh phúc trong chuyến hành trình
+							ngọt ngào của hai đứa mình. Hãy cùng lật mở từng trang hồi ức nhé.
+						</p>
+					</div>
+
+					<!-- 3D Photo Globe Container -->
+					<div
+						class="globe-3d-wrapper mt-16 mb-20 py-4 flex flex-col items-center justify-center overflow-hidden"
+						style="margin: 30px 0"
+					>
+						<div class="globe-3d-container">
+							<div class="globe-3d-sphere" id="globe3dSphere">
+								<!-- 3D elements will be generated by JS -->
+							</div>
+						</div>
+					</div>
+					<p
+						class="text-[11px] text-amber-300/50 mt-16 italic animate-pulse select-none text-center"
+					>
+						★ Quả cầu kỷ niệm xoay tròn 3D - Di chuột để dừng, Click để xem
+						phóng to ★
+					</p>
+
+					<!-- Polaroid Photo Grid -->
+					<div id="polaroidGallery" class="polaroid-gallery">
+						<!-- JavaScript will inject polaroid cards here dynamically -->
+					</div>
+
+					<!-- Load More Button -->
+					<div
+						id="loadMoreContainer"
+						class="flex justify-center mt-24"
+						style="margin-top: 50px"
+					>
+						<button
+							id="loadMoreBtn"
+							class="px-8 py-3 rounded-full border border-amber-300/30 text-amber-200 hover:text-amber-100 hover:bg-amber-500/10 hover:border-amber-300/60 transition-all duration-500 tracking-widest text-xs uppercase flex items-center gap-3"
+						>
+							<span>Xem Tiếp Hồi Ức</span>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-4 w-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</button>
 					</div>
 				</section>
 
@@ -667,6 +1378,110 @@
 			</div>
 		</div>
 
+		<!-- PREMIUM LIGHTBOX CONTAINER -->
+		<div id="lightboxContainer" class="lightbox-container">
+			<div class="lightbox-content">
+				<button id="lightboxClose" class="lightbox-close-btn" aria-label="Đóng">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+				<button
+					id="lightboxPrev"
+					class="lightbox-nav-btn lightbox-prev"
+					aria-label="Ảnh trước"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 19l-7-7 7-7"
+						/>
+					</svg>
+				</button>
+				<div class="lightbox-img-frame">
+					<img
+						id="lightboxImage"
+						class="lightbox-image"
+						src=""
+						alt="Memory Image"
+					/>
+					<p id="lightboxCaption" class="lightbox-caption"></p>
+				</div>
+				<button
+					id="lightboxNext"
+					class="lightbox-nav-btn lightbox-next"
+					aria-label="Ảnh tiếp theo"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5l7 7-7 7"
+						/>
+					</svg>
+				</button>
+			</div>
+		</div>
+
+		<!-- AMBIENT FLOATING MEMORY WIDGET & POPUP -->
+		<div id="bubblePolaroidPopup" class="bubble-polaroid-popup">
+			<span class="bubble-pop-heart">❤️</span>
+			<div class="bubble-pop-image-frame">
+				<img
+					id="bubblePopImage"
+					class="bubble-pop-image"
+					src=""
+					alt="Bong bóng kỷ niệm"
+				/>
+			</div>
+			<p id="bubblePopCaption" class="bubble-pop-caption"></p>
+		</div>
+
+		<div
+			id="floatingMemoryWidget"
+			class="floating-memory-widget"
+			title="Chạm để xem bong bóng hồi ức"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="currentColor"
+				viewBox="0 0 24 24"
+			>
+				<path
+					d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+				/>
+			</svg>
+		</div>
+
+		<!-- MAGICAL MEMORY STREAM TRANSITION OVERLAY -->
+		<div id="memoryStreamOverlay" class="memory-stream-container"></div>
+
 		<!-- AUDIO ELEMENT -->
 		<audio id="bgMusic" loop preload="none">
 			<source
@@ -694,6 +1509,158 @@
 			const modalTitle = document.getElementById('modalTitle');
 			const modalMessage = document.getElementById('modalMessage');
 
+			// NEW MEMORIES DOM SELECTORS
+			const polaroidGallery = document.getElementById('polaroidGallery');
+			const loadMoreBtn = document.getElementById('loadMoreBtn');
+			const loadMoreContainer = document.getElementById('loadMoreContainer');
+			const lightboxContainer = document.getElementById('lightboxContainer');
+			const lightboxImage = document.getElementById('lightboxImage');
+			const lightboxCaption = document.getElementById('lightboxCaption');
+			const lightboxClose = document.getElementById('lightboxClose');
+			const lightboxPrev = document.getElementById('lightboxPrev');
+			const lightboxNext = document.getElementById('lightboxNext');
+			const floatingMemoryWidget = document.getElementById(
+				'floatingMemoryWidget',
+			);
+			const bubblePolaroidPopup = document.getElementById(
+				'bubblePolaroidPopup',
+			);
+			const bubblePopImage = document.getElementById('bubblePopImage');
+			const bubblePopCaption = document.getElementById('bubblePopCaption');
+
+			// Romantic memories data (30 items)
+			const romanticMemories = [
+				{
+					url: 'assets/1a3a55f14cc2cd9c94d31.jpg',
+					caption: 'Nụ cười sưởi ấm những ngày mưa gió 🌧️',
+				},
+				{
+					url: 'assets/1afecf80d6b357ed0ea229.jpg',
+					caption:
+						'Góc phố thân quen nơi mình trao nhau những cái hẹn ngọt ngào ☕',
+				},
+				{
+					url: 'assets/1b3e67d67ee5ffbba6f48.jpg',
+					caption: 'Em là viên kẹo ngọt ngào nhất trong cuộc đời anh 🍬',
+				},
+				{
+					url: 'assets/2674f129e81a6944300b24.jpg',
+					caption: 'Mỗi khoảnh khắc bên em đều ngập tràn bình yên vô giá ✨',
+				},
+				{
+					url: 'assets/2b2ad9d6c0e541bb18f44.jpg',
+					caption: 'Cái ôm ấm áp xua tan đi bao mệt mỏi của người lớn 🧸',
+				},
+				{
+					url: 'assets/2f79ae62b751360f6f4012.jpg',
+					caption: 'Chỉ cần có em bên cạnh, thế gian này đều hóa dịu dàng 🌸',
+				},
+				{
+					url: 'assets/3358c147d874592a006511.jpg',
+					caption: 'Hẹn hò ngày đầy nắng ấm, nụ cười em rạng rỡ muôn phần ☀️',
+				},
+				{
+					url: 'assets/41b566727f41fe1fa7503.jpg',
+					caption: 'Ánh mắt em chứa đựng cả bầu trời sao lấp lánh của anh 🌟',
+				},
+				{
+					url: 'assets/555430172924a87af13528.jpg',
+					caption:
+						'Hành trình dài phía trước, nguyện dắt tay em đi qua muôn trùng 🛣️',
+				},
+				{
+					url: 'assets/59c260267915f84ba1049.jpg',
+					caption: 'Tay trong tay thật chặt, không bao giờ buông ra em nhé 🤝',
+				},
+				{
+					url: 'assets/5d115d1a4429c5779c3817.jpg',
+					caption: 'Giữ mãi những ký ức tuyệt vời nhất của hai đứa mình 📸',
+				},
+				{
+					url: 'assets/6967d86dc15e4000194f16.jpg',
+					caption: 'Đáng yêu nhất là gương mặt lúc hờn dỗi đòi anh dỗ dành 😤',
+				},
+				{
+					url: 'assets/6a87ea9cf3af72f12bbe13.jpg',
+					caption:
+						'Buổi chiều hoàng hôn lãng mạn tô hồng thêm tình yêu tụi mình 🌅',
+				},
+				{
+					url: 'assets/7662776a6e59ef07b64815.jpg',
+					caption: 'Nụ cười thẹn thùng dịu nhẹ làm tim anh loạn nhịp 💓',
+				},
+				{
+					url: 'assets/7907f848e17b6025396a27.jpg',
+					caption: 'Bức ảnh chụp trộm ngơ ngác đáng yêu khó cưỡng nổi 🫣',
+				},
+				{
+					url: 'assets/7d16573f4e0ccf52961d21.jpg',
+					caption: 'Bữa tối ấm cúng cùng em vẽ nên những hạnh phúc giản đơn 🕯️',
+				},
+				{
+					url: 'assets/7fcd71326801e95fb0105.jpg',
+					caption: 'Em bé ngoan nhất trần đời, luôn xứng đáng được nâng niu 🍼',
+				},
+				{
+					url: 'assets/a4b6cafad3c952970bd826.jpg',
+					caption:
+						'Cảm ơn em vì đã đến và làm thế giới của anh rực rỡ sắc màu 🌈',
+				},
+				{
+					url: 'assets/a5d084c79df41caa45e514.jpg',
+					caption: 'Thích nhất là ngắm nhìn em vui cười hạnh phúc bên anh 😄',
+				},
+				{
+					url: 'assets/a5efa31aba293b7762386.jpg',
+					caption: 'Hạnh phúc chỉ đơn giản là được kề cạnh em mỗi sớm mai 🌻',
+				},
+				{
+					url: 'assets/bdf4aec1b7f236ac6fe318.jpg',
+					caption: 'Những khoảnh khắc tự nhiên, chân thật nhất của chúng ta 🫶',
+				},
+				{
+					url: 'assets/c33814cb0df88ca6d5e97.jpg',
+					caption: 'Gió khẽ lay làn tóc em mềm mại dưới ánh chiều tà 🍃',
+				},
+				{
+					url: 'assets/c57cf65cef6f6e31377e23.jpg',
+					caption: 'Cùng em đi đến tận cùng trời cuối đất, bất kể giông bão ⛈️',
+				},
+				{
+					url: 'assets/c9e10dff14cc9592ccdd10.jpg',
+					caption:
+						'Những tia nắng luồn qua kẽ tay, soi sáng đôi ta rạng ngời 🌤️',
+				},
+				{
+					url: 'assets/ca7a4a4a5379d2278b6819.jpg',
+					caption:
+						'Sưởi ấm lòng anh bằng những cử chỉ quan tâm nhỏ bé từ em ❤️',
+				},
+				{
+					url: 'assets/ca8950ac499fc8c1918e22.jpg',
+					caption:
+						'Tựa đầu vào bờ vai anh, mọi giông bão ngoài kia đều dừng lại 💆‍♀️',
+				},
+				{
+					url: 'assets/e604222c3b1fba41e30e20.jpg',
+					caption: 'Như một thước phim điện ảnh tuyệt đẹp ghi dấu tình ta 🎬',
+				},
+				{
+					url: 'assets/ed0fc459dd6a5c34057b25.jpg',
+					caption:
+						'Trái tim anh nhỏ lắm, chỉ đủ chứa một mình em bé mà thôi 💕',
+				},
+				{
+					url: 'assets/fe0ab17ba8482916705930.jpg',
+					caption:
+						'Những lời thì thầm ngọt ngào dịu êm ta dành riêng cho nhau 🤫',
+				},
+				{
+					url: 'assets/fe8a4e4f577cd6228f6d2.jpg',
+					caption: 'Hứa yêu thương và chở che em suốt cuộc đời này, em nhé 💍',
+				},
+			];
+
 			// Sweet wishes database
 			const sweetCandyWishes = [
 				'🍬 [Lời hứa] Cuối tuần này anh sẽ đưa em đi ăn món lẩu yêu thích nhất của em, ăn no nê không cần nhìn cân nặng nha!',
@@ -706,11 +1673,18 @@
 				'🍭 [Ước nguyện] Mong cô gái của anh ngày nào cũng là 1/6, được vui tươi, được bảo bọc và không lo sợ giông bão.',
 			];
 
+			let visibleImagesCount = 12;
+			let currentLightboxIndex = 0;
+			let isBubblePopupOpen = false;
+			let bubbleTimeout = null;
+
 			let isMusicPlaying = false;
 
 			// Initialize and setup Event Listeners
 			window.onload = function () {
 				initFireflyCanvas();
+				initMemoriesAlbum(); // Init memories gallery
+				startIntroAmbientPhotos(); // Khởi chạy chùm ảnh bay lơ lửng ngay lúc mới tải web
 
 				// Set volume to soft background
 				bgMusic.volume = 0.5;
@@ -726,6 +1700,9 @@
 			};
 
 			function startExperience() {
+				// Dừng chùm ảnh lơ lửng của màn hình chờ
+				stopIntroAmbientPhotos();
+
 				// Attempt music playback (now permitted since it is a user gesture)
 				bgMusic
 					.play()
@@ -737,17 +1714,127 @@
 						console.log('Audio play failed, user gesture required.', e);
 					});
 
+				// Kích hoạt chùm ảnh bay nhảy ngập tràn màn hình (Memory Stream)
+				startMagicalMemoryStream();
+
 				// Fade out intro overlay
 				introOverlay.classList.add('opacity-0');
 				setTimeout(() => {
 					introOverlay.classList.add('hidden');
 
-					// Show main content
-					mainContent.classList.remove('hidden');
+					// Show main content with a slight delay (1.2s) so photos can fly first beautifully!
 					setTimeout(() => {
-						mainContent.classList.add('opacity-100');
-					}, 50);
+						mainContent.classList.remove('hidden');
+						setTimeout(() => {
+							mainContent.classList.add('opacity-100');
+						}, 50);
+					}, 1200);
 				}, 1000);
+			}
+
+			// Tạo chùm ảnh bay nhảy ngẫu nhiên khắp màn hình khi mới bước vào khu vườn
+			function startMagicalMemoryStream() {
+				const container = document.getElementById('memoryStreamOverlay');
+				if (!container) return;
+
+				container.innerHTML = '';
+				container.classList.add('active');
+
+				// Sinh ra 14 tấm ảnh bay lơ lửng ngẫu nhiên
+				const count = 14;
+				const paths = ['flyPath1', 'flyPath2', 'flyPath3', 'flyPath4'];
+
+				for (let i = 0; i < count; i++) {
+					setTimeout(() => {
+						if (romanticMemories.length === 0) return;
+						const memoryIndex = Math.floor(
+							Math.random() * romanticMemories.length,
+						);
+						const item = romanticMemories[memoryIndex];
+
+						const card = document.createElement('div');
+						card.classList.add('floating-stream-card');
+
+						// Chọn ngẫu nhiên đường bay, thời gian và kích thước
+						const randomPath = paths[Math.floor(Math.random() * paths.length)];
+						const duration = Math.random() * 1.5 + 3.8; // Bay từ 3.8s đến 5.3s
+
+						card.style.animation = `${randomPath} ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`;
+
+						// Thiết kế khung ảnh lơ lửng (chỉ hiển thị ảnh cực đẹp và sắc nét)
+						card.innerHTML = `
+							<img class="floating-stream-img" src="${item.url}" alt="Flying memory" />
+						`;
+
+						container.appendChild(card);
+
+						// Dọn dẹp thẻ HTML sau khi bay xong để tối ưu bộ nhớ
+						setTimeout(() => {
+							card.remove();
+						}, duration * 1000);
+					}, i * 220); // Tạo độ trễ xếp chồng lên nhau (staggered delay)
+				}
+
+				// Ẩn lớp phủ sau khi chùm ảnh hoàn thành bay lượn
+				setTimeout(() => {
+					container.classList.remove('active');
+					container.innerHTML = '';
+				}, 7500);
+			}
+
+			let introPhotosInterval = null;
+
+			// Khởi chạy chùm ảnh bay lơ lửng chậm rãi, nghệ thuật tại màn hình Intro đầu tiên
+			function startIntroAmbientPhotos() {
+				const container = document.getElementById('introAmbientPhotos');
+				if (!container) return;
+
+				container.innerHTML = '';
+				const paths = ['flyPath1', 'flyPath2', 'flyPath3', 'flyPath4'];
+
+				function spawnIntroPhoto() {
+					if (romanticMemories.length === 0) return;
+					const memoryIndex = Math.floor(
+						Math.random() * romanticMemories.length,
+					);
+					const item = romanticMemories[memoryIndex];
+
+					const card = document.createElement('div');
+					card.classList.add('floating-stream-card');
+
+					// Đặt tốc độ cực kỳ chậm rãi (8s đến 11s) cho màn hình chào tạo vẻ thanh bình
+					const randomPath = paths[Math.floor(Math.random() * paths.length)];
+					const duration = Math.random() * 3 + 8;
+
+					card.style.animation = `${randomPath} ${duration}s linear forwards`;
+					card.style.zIndex = '5'; // Bay lơ lửng dưới mặt trăng và nút bấm
+
+					card.innerHTML = `
+						<img class="floating-stream-img" src="${item.url}" alt="Ambient memory" />
+					`;
+
+					container.appendChild(card);
+
+					// Dọn dẹp thẻ
+					setTimeout(() => {
+						card.remove();
+					}, duration * 1000);
+				}
+
+				// Sinh ngay 3 ảnh ban đầu lệch nhịp nhau
+				for (let i = 0; i < 3; i++) {
+					setTimeout(spawnIntroPhoto, i * 1500);
+				}
+
+				// Duy trì vòng lặp sinh ảnh mới mỗi 3 giây
+				introPhotosInterval = setInterval(spawnIntroPhoto, 3000);
+			}
+
+			function stopIntroAmbientPhotos() {
+				if (introPhotosInterval) {
+					clearInterval(introPhotosInterval);
+					introPhotosInterval = null;
+				}
 			}
 
 			function toggleAudio() {
@@ -805,6 +1892,317 @@
 						candyBox.classList.remove('border-amber-400/40');
 					}, 800);
 				}, 300);
+			}
+
+			// MEMORIES ALBUM LOGIC
+			function initMemoriesAlbum() {
+				// Initial render
+				renderMemoriesGrid();
+				init3DMemoryGlobe(); // Khởi tạo quả cầu 3D xoay tròn
+
+				// Load more handler
+				loadMoreBtn.addEventListener('click', () => {
+					visibleImagesCount += 9;
+					renderMemoriesGrid();
+				});
+
+				// Lightbox handlers
+				lightboxClose.addEventListener('click', closeLightbox);
+				lightboxPrev.addEventListener('click', prevLightbox);
+				lightboxNext.addEventListener('click', nextLightbox);
+
+				// Lightbox keyboard navigation
+				document.addEventListener('keydown', (e) => {
+					if (!lightboxContainer.classList.contains('active')) return;
+					if (e.key === 'Escape') closeLightbox();
+					if (e.key === 'ArrowRight') nextLightbox();
+					if (e.key === 'ArrowLeft') prevLightbox();
+				});
+
+				// Close lightbox when clicking outside
+				lightboxContainer.addEventListener('click', (e) => {
+					if (e.target === lightboxContainer) closeLightbox();
+				});
+
+				// Floating Widget Click Handler
+				floatingMemoryWidget.addEventListener('click', toggleBubblePopup);
+			}
+
+			// Khởi tạo quả cầu ảnh kỷ niệm xoay 3D
+			function init3DMemoryGlobe() {
+				const sphere = document.getElementById('globe3dSphere');
+				if (!sphere) return;
+
+				// Phân bổ 30 tấm ảnh đối xứng thành 5 tầng vĩ độ để tạo thành hình quả địa cầu 3D
+				const rings = [
+					{ theta: 52, count: 4 }, // Tầng đỉnh (Cực Bắc)
+					{ theta: 26, count: 7 }, // Tầng cận đỉnh (Bắc bán cầu)
+					{ theta: 0, count: 8 }, // Tầng xích đạo (Trung tâm)
+					{ theta: -26, count: 7 }, // Tầng cận đáy (Nam bán cầu)
+					{ theta: -52, count: 4 }, // Tầng đáy (Cực Nam)
+				];
+
+				// Tính toán bán kính translateZ theo chiều rộng màn hình (responsive)
+				const isMobile = window.innerWidth < 640;
+				const radius = isMobile ? 150 : 265;
+
+				sphere.innerHTML = '';
+				let currentIdx = 0;
+
+				rings.forEach((ring) => {
+					const angleStep = 360 / ring.count;
+
+					for (let i = 0; i < ring.count; i++) {
+						if (currentIdx >= romanticMemories.length) break;
+
+						const item = romanticMemories[currentIdx];
+						const index = currentIdx;
+
+						const phi = angleStep * i;
+						const theta = ring.theta;
+
+						const card = document.createElement('div');
+						card.classList.add('globe-photo-card');
+
+						// Đặt các thuộc tính tọa độ 3D thông qua biến CSS
+						card.style.setProperty('--rotY', `${phi}deg`);
+						card.style.setProperty('--rotX', `${theta}deg`);
+						card.style.setProperty('--tz', `${radius}px`);
+						card.style.setProperty('--base-tz', `${radius}px`);
+
+						// Chỉ hiển thị ảnh, hoàn toàn không có văn bản (chữ) nào bên trong
+						card.innerHTML = `
+							<img class="globe-photo-img" src="${item.url}" alt="${item.caption}" loading="lazy" />
+						`;
+
+						// Hiệu ứng hạt trái tim bay khi rê chuột
+						card.addEventListener('mousemove', (e) => {
+							if (Math.random() > 0.08) return;
+							createHeartParticle(e.clientX, e.clientY);
+						});
+
+						// Click nổ tim + mở Lightbox xem chi tiết
+						card.addEventListener('click', (e) => {
+							const x = e.clientX;
+							const y = e.clientY;
+
+							for (let k = 0; k < 10; k++) {
+								setTimeout(() => {
+									createHeartParticle(x, y);
+								}, k * 40);
+							}
+
+							setTimeout(() => {
+								openLightbox(index);
+							}, 250);
+						});
+
+						sphere.appendChild(card);
+						currentIdx++;
+					}
+				});
+
+				// Cập nhật lại tọa độ bán kính khi resize màn hình
+				window.addEventListener('resize', () => {
+					const isMobile = window.innerWidth < 640;
+					const newRadius = isMobile ? 150 : 265;
+					const cards = sphere.querySelectorAll('.globe-photo-card');
+					cards.forEach((card) => {
+						card.style.setProperty('--tz', `${newRadius}px`);
+						card.style.setProperty('--base-tz', `${newRadius}px`);
+					});
+				});
+			}
+
+			function renderMemoriesGrid() {
+				// Clear grid
+				polaroidGallery.innerHTML = '';
+
+				// Show visible count
+				const itemsToRender = romanticMemories.slice(0, visibleImagesCount);
+
+				itemsToRender.forEach((item, index) => {
+					const card = document.createElement('div');
+					card.classList.add('polaroid-card');
+
+					// Apply randomized tilt classes for organic look
+					const tilts = [
+						'tilt-left-sm',
+						'tilt-right-sm',
+						'tilt-left-md',
+						'tilt-right-md',
+					];
+					const randomTilt = tilts[index % tilts.length];
+					card.classList.add(randomTilt);
+
+					card.innerHTML = `
+						<div class="polaroid-image-container">
+							<img class="polaroid-image" src="${item.url}" alt="${item.caption}" loading="lazy" />
+						</div>
+						<p class="polaroid-caption">${item.caption}</p>
+					`;
+
+					// Hover Heart Particle Effect
+					card.addEventListener('mousemove', (e) => {
+						if (Math.random() > 0.08) return; // Throttle particle rate
+						createHeartParticle(e.clientX, e.clientY);
+					});
+
+					// Click Heart Burst + Open Lightbox
+					card.addEventListener('click', (e) => {
+						const x = e.clientX;
+						const y = e.clientY;
+
+						// Burst 10 heart particles
+						for (let i = 0; i < 10; i++) {
+							setTimeout(() => {
+								createHeartParticle(x, y);
+							}, i * 40);
+						}
+
+						// Open Lightbox index after short delay for visual impact
+						setTimeout(() => {
+							openLightbox(index);
+						}, 250);
+					});
+
+					polaroidGallery.appendChild(card);
+				});
+
+				// Hide load more button if all images rendered
+				if (visibleImagesCount >= romanticMemories.length) {
+					loadMoreContainer.style.display = 'none';
+				}
+			}
+
+			// Heart particle generator
+			function createHeartParticle(x, y) {
+				const heart = document.createElement('span');
+				heart.classList.add('floating-heart');
+				heart.innerHTML = ['❤️', '💖', '💝', '💕', '✨'][
+					Math.floor(Math.random() * 5)
+				];
+
+				// Randomize direction and rotation
+				const rotStart = Math.random() * 30 - 15;
+				const rotEnd = Math.random() * 60 - 30;
+				const dx = Math.random() * 80 - 40;
+
+				heart.style.setProperty('--rot-angle', `${rotStart}deg`);
+				heart.style.setProperty('--rot-angle-end', `${rotEnd}deg`);
+				heart.style.setProperty('--dx', `${dx}px`);
+
+				heart.style.left = `${x}px`;
+				heart.style.top = `${y}px`;
+
+				const size = Math.random() * 0.5 + 0.8;
+				heart.style.transform = `translate(-50%, -50%) scale(${size})`;
+
+				document.body.appendChild(heart);
+
+				// Remove after animation completes
+				setTimeout(() => {
+					heart.remove();
+				}, 1500);
+			}
+
+			// Lightbox Controller
+			function openLightbox(index) {
+				currentLightboxIndex = index;
+				updateLightboxContent();
+
+				lightboxContainer.classList.remove('hidden');
+				setTimeout(() => {
+					lightboxContainer.classList.add('active');
+				}, 50);
+			}
+
+			// Add styling transition helpers for smooth lightbox fade
+			if (!document.getElementById('lightbox-transition-style')) {
+				const styleEl = document.createElement('style');
+				styleEl.id = 'lightbox-transition-style';
+				styleEl.innerHTML = `
+					.lightbox-image, .lightbox-caption {
+						transition: opacity 0.25s ease-in-out;
+					}
+				`;
+				document.head.appendChild(styleEl);
+			}
+
+			function closeLightbox() {
+				lightboxContainer.classList.remove('active');
+				setTimeout(() => {
+					lightboxContainer.classList.add('hidden');
+				}, 500);
+			}
+
+			function updateLightboxContent() {
+				const item = romanticMemories[currentLightboxIndex];
+
+				// Smooth content change
+				lightboxImage.style.opacity = 0;
+				lightboxCaption.style.opacity = 0;
+
+				setTimeout(() => {
+					lightboxImage.src = item.url;
+					lightboxCaption.innerText = item.caption;
+
+					lightboxImage.style.opacity = 1;
+					lightboxCaption.style.opacity = 1;
+				}, 200);
+			}
+
+			function nextLightbox() {
+				currentLightboxIndex =
+					(currentLightboxIndex + 1) %
+					Math.min(visibleImagesCount, romanticMemories.length);
+				updateLightboxContent();
+			}
+
+			function prevLightbox() {
+				currentLightboxIndex =
+					(currentLightboxIndex -
+						1 +
+						Math.min(visibleImagesCount, romanticMemories.length)) %
+					Math.min(visibleImagesCount, romanticMemories.length);
+				updateLightboxContent();
+			}
+
+			// Floating widget popup controller
+			function toggleBubblePopup() {
+				if (isBubblePopupOpen) {
+					bubblePolaroidPopup.classList.remove('active');
+					isBubblePopupOpen = false;
+					if (bubbleTimeout) clearTimeout(bubbleTimeout);
+				} else {
+					// Choose a random memory
+					const randomIndex = Math.floor(
+						Math.random() * romanticMemories.length,
+					);
+					const item = romanticMemories[randomIndex];
+
+					bubblePopImage.src = item.url;
+					bubblePopCaption.innerText = item.caption;
+
+					// Burst hearts from widget location
+					const widgetRect = floatingMemoryWidget.getBoundingClientRect();
+					const x = widgetRect.left + widgetRect.width / 2;
+					const y = widgetRect.top + widgetRect.height / 2;
+
+					for (let i = 0; i < 6; i++) {
+						createHeartParticle(x, y);
+					}
+
+					bubblePolaroidPopup.classList.add('active');
+					isBubblePopupOpen = true;
+
+					// Auto close after 6 seconds
+					if (bubbleTimeout) clearTimeout(bubbleTimeout);
+					bubbleTimeout = setTimeout(() => {
+						bubblePolaroidPopup.classList.remove('active');
+						isBubblePopupOpen = false;
+					}, 6000);
+				}
 			}
 
 			// Coupon interaction
