@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>I'mPA</title>
+		<meta
+			property="og:image:secure_url"
+			content="https://sf-static.upanhlaylink.com/img/image_20260601098b3ca1c204e36464926f6714267b25.jpg"
+		/>
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<link
+			rel="icon"
+			href="https://sf-static.upanhlaylink.com/img/image_20260601098b3ca1c204e36464926f6714267b25.jpg"
+			type="image/png"
+		/>
+		<meta name="description" content="I'mPA" />
+		<!-- Tailwind CSS CDN -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- Google Fonts: Playfair Display & Inter -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			body {
+				font-family: 'Plus Jakarta Sans', sans-serif;
+				background-color: #030712;
+				overflow-x: hidden;
+			}
+			.serif-font {
+				font-family: 'Playfair Display', serif;
+			}
+			/* Custom Glowing Effects */
+			.glow-gold {
+				text-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+			}
+			.glow-box-gold {
+				box-shadow: 0 0 25px rgba(251, 191, 36, 0.15);
+			}
+			.glow-box-teal {
+				box-shadow: 0 0 25px rgba(45, 212, 191, 0.15);
+			}
+			/* Glassmorphism */
+			.glass-panel {
+				background: rgba(15, 23, 42, 0.65);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+			}
+			/* Keyframe Animations */
+			@keyframes pulseSlow {
+				0%,
+				100% {
+					opacity: 0.3;
+					transform: scale(1);
+				}
+				50% {
+					opacity: 0.6;
+					transform: scale(1.05);
+				}
+			}
+			.animate-pulse-slow {
+				animation: pulseSlow 8s infinite ease-in-out;
+			}
+			@keyframes floatUp {
+				0% {
+					transform: translateY(0px) rotate(0deg);
+					opacity: 0.8;
+				}
+				50% {
+					transform: translateY(-10px) rotate(2deg);
+					opacity: 1;
+				}
+				100% {
+					transform: translateY(0px) rotate(0deg);
+					opacity: 0.8;
+				}
+			}
+			.animate-float {
+				animation: floatUp 6s infinite ease-in-out;
+			}
+			/* Hide scrollbars but keep functionality */
+			::-webkit-scrollbar {
+				width: 6px;
+			}
+			::-webkit-scrollbar-track {
+				background: #030712;
+			}
+			::-webkit-scrollbar-thumb {
+				background: #1e293b;
+				border-radius: 3px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				background: #475569;
+			}
+		</style>
+	</head>
+	<body
+		class="text-slate-200 antialiased selection:bg-amber-500/20 selection:text-amber-300"
+	>
+		<!-- Ambient background glows -->
+		<div
+			class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden"
+		>
+			<div
+				class="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-500/5 blur-[120px] animate-pulse-slow"
+			></div>
+			<div
+				class="absolute bottom-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-teal-500/5 blur-[150px] animate-pulse-slow"
+				style="animation-delay: 2s"
+			></div>
+			<!-- Moonlight source -->
+			<div
+				class="absolute top-[15%] left-[10%] w-32 h-32 rounded-full bg-amber-100/10 blur-[50px] pointer-events-none"
+			></div>
+		</div>
+
+		<!-- Background Firefly Canvas -->
+		<canvas
+			id="fireflyCanvas"
+			class="fixed top-0 left-0 w-full h-full pointer-events-none z-10"
+		></canvas>
+
+		<!-- INTRO OVERLAY (Solves Autoplay & Starts Atmosphere) -->
+		<div
+			id="introOverlay"
+			class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-all duration-1000"
+		>
+			<!-- Floating moon -->
+			<div class="relative mb-8 animate-float">
+				<div
+					class="w-24 h-24 rounded-full bg-amber-100 glow-box-gold flex items-center justify-center relative overflow-hidden"
+				>
+					<!-- Moon craters texture -->
+					<div
+						class="absolute top-3 left-6 w-5 h-5 rounded-full bg-amber-200/50"
+					></div>
+					<div
+						class="absolute top-10 left-12 w-8 h-8 rounded-full bg-amber-200/50"
+					></div>
+					<div
+						class="absolute bottom-4 left-5 w-4 h-4 rounded-full bg-amber-200/50"
+					></div>
+				</div>
+				<!-- Star sparkles around moon -->
+				<svg
+					class="absolute -top-4 -right-4 w-6 h-6 text-amber-300 animate-pulse"
+					fill="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						d="M12 1.5l2.7 6.3 6.8.5-5.2 4.5 1.6 6.7-5.9-3.7-5.9 3.7 1.6-6.7-5.2-4.5 6.8-.5z"
+					/>
+				</svg>
+				<svg
+					class="absolute -bottom-2 -left-6 w-4 h-4 text-amber-200/80 animate-pulse"
+					style="animation-delay: 1s"
+					fill="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						d="M12 1.5l2.7 6.3 6.8.5-5.2 4.5 1.6 6.7-5.9-3.7-5.9 3.7 1.6-6.7-5.2-4.5 6.8-.5z"
+					/>
+				</svg>
+			</div>
+
+			<h1
+				class="serif-font text-3xl md:text-4xl text-amber-100 glow-gold font-light tracking-wide text-center px-6 max-w-xl"
+			>
+				Gửi Em Bé của anh...
+			</h1>
+			<p class="text-slate-400 text-sm mt-3 tracking-widest uppercase">
+				Khu vườn đang chờ em mở cửa
+			</p>
+
+			<button
+				id="enterGardenBtn"
+				class="mt-12 px-8 py-3 rounded-full border border-amber-300/30 text-amber-200 hover:text-amber-100 hover:bg-amber-500/10 hover:border-amber-300/60 transition-all duration-500 tracking-widest text-xs uppercase flex items-center gap-3 group"
+			>
+				<span>Bước vào khu vườn</span>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-4 w-4 transform group-hover:translate-x-1 transition-transform"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M14 5l7 7m0 0l-7 7m7-7H3"
+					/>
+				</svg>
+			</button>
+		</div>
+
+		<!-- MAIN APP WRAPPER (Initially Hidden / Becomes Visible) -->
+		<div
+			id="mainContent"
+			class="relative z-20 opacity-0 transition-opacity duration-1000 hidden max-w-4xl mx-auto px-4 py-8 md:py-16"
+		>
+			<!-- HEADER WITH AUDIO CONTROLLER -->
+			<header
+				class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 md:mb-20 border-b border-slate-800/40 pb-8"
+			>
+				<div class="text-center md:text-left">
+					<div
+						class="flex items-center justify-center md:justify-start gap-2 text-amber-400 text-xs font-semibold uppercase tracking-widest mb-2"
+					>
+						<span
+							class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"
+						></span>
+						<span>TP.HCM, Ngày 1 Tháng 6</span>
+					</div>
+					<h2
+						class="serif-font text-2xl font-light text-slate-100 tracking-wide"
+					>
+						Ngày Lễ Của
+						<span class="text-amber-200 glow-gold italic"
+							>Đứa Trẻ Bên Trong</span
+						>
+						Em
+					</h2>
+				</div>
+
+				<!-- Music Player Widget -->
+				<div
+					class="glass-panel px-5 py-3 rounded-2xl flex items-center gap-4 glow-box-gold border border-amber-500/10"
+				>
+					<div
+						class="relative w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center overflow-hidden border border-amber-400/20"
+					>
+						<div
+							id="musicDisk"
+							class="absolute inset-0 w-full h-full rounded-full border-2 border-dashed border-amber-400/30 flex items-center justify-center"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 text-amber-300"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="1.5"
+									d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+								/>
+							</svg>
+						</div>
+					</div>
+					<div>
+						<p class="text-xs text-slate-400 tracking-wider">Đang phát:</p>
+						<p
+							class="text-sm font-medium text-amber-200 truncate max-w-[150px]"
+						>
+							Romantic Piano
+						</p>
+					</div>
+					<button
+						id="audioToggleBtn"
+						class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-300 flex items-center justify-center transition-colors"
+					>
+						<!-- Pause Icon (Default playing) -->
+						<svg
+							id="pauseIcon"
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						<!-- Play Icon -->
+						<svg
+							id="playIcon"
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5 hidden"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+					</button>
+				</div>
+			</header>
+
+			<!-- MAIN LAYOUT -->
+			<main class="grid grid-cols-1 gap-12 md:gap-16">
+				<!-- SECTION 1: THE MESSAGE (Refined Love Letter) -->
+				<section
+					class="glass-panel p-8 md:p-12 rounded-3xl relative overflow-hidden glow-box-gold"
+				>
+					<div class="absolute top-0 right-0 p-4 opacity-10">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-32 w-32 text-amber-100"
+							fill="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+							/>
+						</svg>
+					</div>
+
+					<span
+						class="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-300 text-xs tracking-widest uppercase mb-6 border border-amber-500/20"
+					>
+						Bức thư từ Anh
+					</span>
+
+					<h3
+						class="serif-font text-3xl md:text-4xl text-amber-100 font-light mb-6 tracking-wide leading-tight"
+					>
+						"Em luôn có thể là một đứa trẻ khi ở bên anh"
+					</h3>
+
+					<div
+						class="space-y-6 text-slate-300 font-light leading-relaxed text-base md:text-lg"
+					>
+						<p>
+							Gửi em - cô gái luôn kiên cường, tự lập và tràn đầy trách nhiệm
+							mỗi ngày. Cuộc sống của người lớn bận rộn đôi khi bắt em phải
+							khoác lên mình lớp áo mạnh mẽ, đối mặt với deadline, với những mối
+							lo và áp lực không tên.
+						</p>
+						<p
+							class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]"
+						>
+							"Nhưng em ơi, trong tim mỗi người trưởng thành luôn có một đứa trẻ
+							cần được chở che. Và ngày 1/6 này, anh muốn dành riêng để bảo bọc
+							đứa trẻ ngọt ngào ấy bên trong em."
+						</p>
+						<p>
+							Hôm nay, em không cần phải làm một cô nàng lý trí hay đảm đang của
+							bất kỳ ai. Hôm nay, em chỉ cần là một "Bé Ngoan" được quyền hờn
+							dỗi, được yêu chiều, được ăn những món ngon lành và mỉm cười thật
+							rạng rỡ mà không cần lo nghĩ gì cả.
+						</p>
+						<p>
+							Cảm ơn em vì đã luôn là một người yêu tuyệt vời, nhưng cũng cảm ơn
+							cả phần trẻ con đáng yêu mà chỉ có anh được may mắn ngắm nhìn.
+							Chúc em một ngày Quốc tế Thiếu nhi hạnh phúc, tràn đầy sự dỗ dành
+							ngọt ngào nhất.
+						</p>
+					</div>
+
+					<div
+						class="mt-8 pt-6 border-t border-slate-800/60 flex items-center justify-between"
+					>
+						<div>
+							<p class="text-xs text-slate-400 uppercase tracking-widest">
+								Yêu em nhiều hơn mỗi ngày,
+							</p>
+							<p
+								class="serif-font text-xl text-amber-300 mt-1 italic font-light"
+							>
+								Chàng trai của em ❤️
+							</p>
+						</div>
+						<!-- Virtual stamp -->
+						<div
+							class="w-16 h-16 rounded-full border border-dashed border-amber-500/40 flex items-center justify-center rotate-12 transform hover:scale-105 transition-transform"
+						>
+							<span
+								class="text-[10px] text-amber-400 uppercase tracking-widest font-semibold text-center leading-none"
+								>Bé Ngoan<br />01/06</span
+							>
+						</div>
+					</div>
+				</section>
+
+				<!-- SECTION 2: SPECIAL CHILDHOOD COUPONS -->
+				<section class="space-y-6">
+					<div class="text-center">
+						<h3 class="serif-font text-2xl text-slate-100 font-light mb-2">
+							Thẻ Đặc Quyền Tuổi Thơ
+						</h3>
+						<p class="text-sm text-slate-400 max-w-md mx-auto">
+							Click vào từng chiếc thẻ dưới đây để kích hoạt và gửi yêu cầu "đặc
+							quyền" của em trực tiếp đến anh nhé!
+						</p>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+						<!-- Coupon 1 -->
+						<div
+							class="group relative cursor-pointer"
+							onclick="
+								redeemCoupon(
+									'Vé Ôm Xoa Đầu Vô Hạn',
+									'Đang gửi tín hiệu cần được dỗ dành gấp đến người ấy...',
+								)
+							"
+						>
+							<div
+								class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+							></div>
+							<div
+								class="relative glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-400/30 transition-all duration-300 flex flex-col justify-between h-56"
+							>
+								<div>
+									<div class="flex justify-between items-start">
+										<span
+											class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-1 rounded font-mono"
+											>CODE: EM_BE_01</span
+										>
+										<span class="text-amber-300/80">★</span>
+									</div>
+									<h4
+										class="serif-font text-xl text-amber-100 mt-4 font-normal group-hover:text-amber-300 transition-colors"
+									>
+										Vé Ôm Trầm & Xoa Đầu
+									</h4>
+									<p class="text-xs text-slate-400 mt-2">
+										Dùng bất cứ khi nào em thấy mệt mỏi, áp lực hoặc chỉ đơn
+										giản là thèm cái ôm ấm áp của anh.
+									</p>
+								</div>
+								<div
+									class="flex items-center justify-between border-t border-slate-800/60 pt-3"
+								>
+									<span
+										class="text-[10px] text-slate-400 uppercase tracking-wider"
+										>Hạn dùng: Mãi mãi</span
+									>
+									<span
+										class="text-xs text-amber-400 font-medium group-hover:underline"
+										>Bấm nhận ngay →</span
+									>
+								</div>
+							</div>
+						</div>
+
+						<!-- Coupon 2 -->
+						<div
+							class="group relative cursor-pointer"
+							onclick="
+								redeemCoupon(
+									'Vé Trốn Cả Thế Giới',
+									'Tín hiệu tắt điện thoại và cùng nhau đi trốn đã được ghi nhận!',
+								)
+							"
+						>
+							<div
+								class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+							></div>
+							<div
+								class="relative glass-panel p-6 rounded-2xl border border-slate-800 hover:border-teal-400/30 transition-all duration-300 flex flex-col justify-between h-56"
+							>
+								<div>
+									<div class="flex justify-between items-start">
+										<span
+											class="text-[10px] bg-teal-500/10 text-teal-300 px-2 py-1 rounded font-mono"
+											>CODE: DING_DONG</span
+										>
+										<span class="text-teal-300/80">✿</span>
+									</div>
+									<h4
+										class="serif-font text-xl text-teal-200 mt-4 font-normal group-hover:text-teal-300 transition-colors"
+									>
+										Một Ngày Trốn Việc
+									</h4>
+									<p class="text-xs text-slate-400 mt-2">
+										Một ngày không laptop, không deadline. Anh sẽ chuẩn bị đồ ăn
+										và chở em đi ngắm phố phường.
+									</p>
+								</div>
+								<div
+									class="flex items-center justify-between border-t border-slate-800/60 pt-3"
+								>
+									<span
+										class="text-[10px] text-slate-400 uppercase tracking-wider"
+										>Hạn dùng: Ngày em mỏi mệt</span
+									>
+									<span
+										class="text-xs text-teal-300 font-medium group-hover:underline"
+										>Bấm nhận ngay →</span
+									>
+								</div>
+							</div>
+						</div>
+
+						<!-- Coupon 3 -->
+						<div
+							class="group relative cursor-pointer"
+							onclick="
+								redeemCoupon(
+									'Vé Món Ngon Xoa Dịu',
+									'Chuyến xe giao hàng ngọt ngào đang được điều phối...',
+								)
+							"
+						>
+							<div
+								class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+							></div>
+							<div
+								class="relative glass-panel p-6 rounded-2xl border border-slate-800 hover:border-pink-400/30 transition-all duration-300 flex flex-col justify-between h-56"
+							>
+								<div>
+									<div class="flex justify-between items-start">
+										<span
+											class="text-[10px] bg-pink-500/10 text-pink-300 px-2 py-1 rounded font-mono"
+											>CODE: SWEET_TREAT</span
+										>
+										<span class="text-pink-300/80">❤</span>
+									</div>
+									<h4
+										class="serif-font text-xl text-pink-200 mt-4 font-normal group-hover:text-pink-300 transition-colors"
+									>
+										Ăn Uống Thả Phanh
+									</h4>
+									<p class="text-xs text-slate-400 mt-2">
+										Trà sữa sương sương, bánh ngọt thơm lừng hoặc bất cứ món gì
+										em muốn. Đừng lo béo nhé, em bé thì phải tròn trịa mới đáng
+										yêu.
+									</p>
+								</div>
+								<div
+									class="flex items-center justify-between border-t border-slate-800/60 pt-3"
+								>
+									<span
+										class="text-[10px] text-slate-400 uppercase tracking-wider"
+										>Hạn dùng: Bất kì lúc nào thèm</span
+									>
+									<span
+										class="text-xs text-pink-300 font-medium group-hover:underline"
+										>Bấm nhận ngay →</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- SECTION 3: CANDY DISPENSER (Lucky Thoughts) -->
+				<section
+					class="glass-panel p-8 rounded-3xl glow-box-teal relative overflow-hidden"
+				>
+					<div
+						class="flex flex-col md:flex-row items-center justify-between gap-8"
+					>
+						<div class="space-y-3 max-w-md text-center md:text-left">
+							<span
+								class="text-xs text-teal-400 uppercase tracking-widest font-mono"
+								>Trò Chơi Hạnh Phúc</span
+							>
+							<h4 class="serif-font text-2xl text-slate-100 font-light">
+								Hũ Kẹo May Mắn Tuổi Thơ
+							</h4>
+							<p class="text-sm text-slate-400">
+								Em đang muốn nghe một lời dỗ dành ngọt ngào, một lời hứa bền
+								chặt, hay một bất ngờ thú vị? Hãy nhấn nút bốc kẹo nhé!
+							</p>
+
+							<!-- Lucky Candy Text Container -->
+							<div
+								id="candyBox"
+								class="mt-6 p-5 rounded-2xl bg-slate-900/80 border border-slate-800 text-slate-200 italic font-light text-sm min-h-[80px] flex items-center justify-center text-center transition-all duration-500"
+							>
+								"Click vào viên kẹo bên cạnh để xem điều ngọt ngào dành riêng
+								cho em hôm nay nhé."
+							</div>
+						</div>
+
+						<!-- The Interactive Candy Machine Visual -->
+						<div class="flex flex-col items-center justify-center">
+							<button
+								id="candyBtn"
+								class="w-32 h-32 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 flex items-center justify-center shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-300 relative group glow-box-gold"
+							>
+								<!-- Inner candy shape SVG -->
+								<svg
+									class="w-16 h-16 text-slate-950 transform group-hover:rotate-12 transition-transform duration-500"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										d="M17.5 12c0-.52-.13-1-.35-1.44l2.42-2.42c.39-.39.39-1.03 0-1.42s-1.03-.39-1.42 0l-2.42 2.42c-.44-.22-.92-.35-1.44-.35h-5.38c-.52 0-1 .13-1.44.35L5.07 6.72c-.39-.39-1.03-.39-1.42 0s-.39 1.03 0 1.42l2.42 2.42c-.22.44-.35.92-.35 1.44s.13 1 .35 1.44L3.65 15.86c-.39.39-.39 1.03 0 1.42s1.03.39 1.42 0l2.42-2.42c.44.22.92.35 1.44.35h5.38c.52 0 1-.13 1.44-.35l2.42 2.42c.39.39 1.03.39 1.42 0s.39-1.03 0-1.42l-2.42-2.42c.22-.44.35-.92.35-1.44z"
+									/>
+								</svg>
+								<!-- Animated halo -->
+								<span
+									class="absolute inset-0 rounded-full bg-amber-400/20 animate-ping group-hover:animate-none pointer-events-none"
+								></span>
+							</button>
+							<span
+								class="text-xs text-amber-400 font-mono mt-3 uppercase tracking-wider animate-pulse"
+								>Chạm để mở kẹo</span
+							>
+						</div>
+					</div>
+				</section>
+
+				<!-- FOOTER WITH SWEET STATEMENTS -->
+				<section class="text-center space-y-4 py-8 border-t border-slate-900">
+					<p class="serif-font text-lg text-slate-300 italic font-light">
+						"Chúc em bé của anh luôn có những đêm ngon giấc, những ngày thảnh
+						thơi, và luôn biết rằng mình được yêu thương vô điều kiện."
+					</p>
+					<p class="text-xs text-slate-600 tracking-widest uppercase">
+						Trang web được thiết kế đặc biệt dành cho em
+					</p>
+				</section>
+			</main>
+		</div>
+
+		<!-- CUSTOM NOTIFICATION MODAL -->
+		<div
+			id="modalContainer"
+			class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300"
+		>
+			<div
+				class="glass-panel p-8 rounded-3xl max-w-sm w-full text-center border border-amber-500/20 glow-box-gold"
+			>
+				<div
+					class="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-4 border border-amber-500/20"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-8 w-8"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+				</div>
+				<h4
+					class="serif-font text-xl text-amber-200 mb-2 font-light"
+					id="modalTitle"
+				>
+					Đã nhận đặc quyền
+				</h4>
+				<p
+					class="text-sm text-slate-400 leading-relaxed mb-6"
+					id="modalMessage"
+				>
+					Tín hiệu đáng yêu đã được gửi trực tiếp đến trái tim anh ấy.
+				</p>
+				<button
+					onclick="closeModal()"
+					class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-medium text-sm tracking-wider uppercase transition-colors"
+				>
+					Tuyệt vời quá
+				</button>
+			</div>
+		</div>
+
+		<!-- AUDIO ELEMENT -->
+		<audio id="bgMusic" loop>
+			<source
+				src="./paulyudin-romantic-romantic-music-493488.mp3"
+				type="audio/mpeg"
+			/>
+			Trình duyệt của bạn không hỗ trợ phát nhạc tự động.
+		</audio>
+
+		<script>
+			// DOM Elements
+			const introOverlay = document.getElementById('introOverlay');
+			const mainContent = document.getElementById('mainContent');
+			const enterGardenBtn = document.getElementById('enterGardenBtn');
+			const bgMusic = document.getElementById('bgMusic');
+			const audioToggleBtn = document.getElementById('audioToggleBtn');
+			const musicDisk = document.getElementById('musicDisk');
+			const playIcon = document.getElementById('playIcon');
+			const pauseIcon = document.getElementById('pauseIcon');
+			const candyBtn = document.getElementById('candyBtn');
+			const candyBox = document.getElementById('candyBox');
+
+			// Modal elements
+			const modalContainer = document.getElementById('modalContainer');
+			const modalTitle = document.getElementById('modalTitle');
+			const modalMessage = document.getElementById('modalMessage');
+
+			// Sweet wishes database
+			const sweetCandyWishes = [
+				'🍬 [Lời hứa] Cuối tuần này anh sẽ đưa em đi ăn món lẩu yêu thích nhất của em, ăn no nê không cần nhìn cân nặng nha!',
+				'🍭 [Yêu chiều] Tối nay anh sẽ mát-xa vai và gội đầu dưỡng sinh tại gia cho em thoải mái nhất sau ngày dài mệt mỏi.',
+				"🍫 [Chiều chuộng] 'Hôm nay em chỉ cần làm em bé, tất cả những việc rắc rối ngoài kia cứ để anh lo nhé.'",
+				'🍬 [Lãng mạn] Một ngày ngập tràn những món quà nhỏ ngẫu nhiên không nhân dịp gì cả, chỉ vì anh thích thấy nụ cười của em.',
+				'🍭 [Sự thật] Trong mắt anh, khoảnh khắc em cười lúc được ăn ngon chính là hình ảnh đáng yêu nhất trần đời.',
+				'🍫 [Trái tim] Bất kỳ lúc nào em muốn dỗi, hãy cứ dỗi. Anh hứa sẽ luôn kiên nhẫn dỗ dành em bé bướng bỉnh này.',
+				'🍬 [Bảo vệ] Anh luôn tự hào về sự trưởng thành của em, nhưng anh càng trân quý những lúc em chịu yếu lòng dựa vào vai anh.',
+				'🍭 [Ước nguyện] Mong cô gái của anh ngày nào cũng là 1/6, được vui tươi, được bảo bọc và không lo sợ giông bão.',
+			];
+
+			let isMusicPlaying = false;
+
+			// Initialize and setup Event Listeners
+			window.onload = function () {
+				initFireflyCanvas();
+
+				// Set volume to soft background
+				bgMusic.volume = 0.5;
+
+				// Handle Entrance
+				enterGardenBtn.addEventListener('click', startExperience);
+
+				// Handle Audio Controller
+				audioToggleBtn.addEventListener('click', toggleAudio);
+
+				// Handle Candy Machine
+				candyBtn.addEventListener('click', drawCandyWish);
+			};
+
+			function startExperience() {
+				// Attempt music playback (now permitted since it is a user gesture)
+				bgMusic
+					.play()
+					.then(() => {
+						isMusicPlaying = true;
+						updateAudioUI(true);
+					})
+					.catch((e) => {
+						console.log('Audio play failed, user gesture required.', e);
+					});
+
+				// Fade out intro overlay
+				introOverlay.classList.add('opacity-0');
+				setTimeout(() => {
+					introOverlay.classList.add('hidden');
+
+					// Show main content
+					mainContent.classList.remove('hidden');
+					setTimeout(() => {
+						mainContent.classList.add('opacity-100');
+					}, 50);
+				}, 1000);
+			}
+
+			function toggleAudio() {
+				if (isMusicPlaying) {
+					bgMusic.pause();
+					isMusicPlaying = false;
+					updateAudioUI(false);
+				} else {
+					bgMusic.play().then(() => {
+						isMusicPlaying = true;
+						updateAudioUI(true);
+					});
+				}
+			}
+
+			function updateAudioUI(isPlaying) {
+				if (isPlaying) {
+					playIcon.classList.add('hidden');
+					pauseIcon.classList.remove('hidden');
+					musicDisk.classList.add('animate-spin');
+					musicDisk.style.animationDuration = '8s';
+				} else {
+					playIcon.classList.remove('hidden');
+					pauseIcon.classList.add('hidden');
+					musicDisk.classList.remove('animate-spin');
+				}
+			}
+
+			// Draw sweet candy wish
+			let lastWishIndex = -1;
+			function drawCandyWish() {
+				// Trigger animation on candy button
+				candyBtn.classList.add('scale-90');
+				setTimeout(() => candyBtn.classList.remove('scale-90'), 150);
+
+				// Get random wish without repeating previous one
+				let index;
+				do {
+					index = Math.floor(Math.random() * sweetCandyWishes.length);
+				} while (index === lastWishIndex);
+				lastWishIndex = index;
+
+				const selectedWish = sweetCandyWishes[index];
+
+				// Smooth content switch with fade effect
+				candyBox.style.opacity = 0;
+				candyBox.style.transform = 'translateY(5px)';
+
+				setTimeout(() => {
+					candyBox.innerHTML = selectedWish;
+					candyBox.style.opacity = 1;
+					candyBox.style.transform = 'translateY(0)';
+					candyBox.classList.add('border-amber-400/40');
+					setTimeout(() => {
+						candyBox.classList.remove('border-amber-400/40');
+					}, 800);
+				}, 300);
+			}
+
+			// Coupon interaction
+			function redeemCoupon(title, actionDesc) {
+				modalTitle.innerText = `Đã kích hoạt: ${title}`;
+				modalMessage.innerHTML = `${actionDesc}<br><br><span class="text-xs text-amber-300">★ Mã ưu đãi đã được lưu lại để quy đổi với anh bất cứ lúc nào! ★</span>`;
+
+				// Show modal
+				modalContainer.classList.remove('hidden');
+				setTimeout(() => {
+					modalContainer.classList.add('opacity-100');
+				}, 50);
+			}
+
+			function closeModal() {
+				modalContainer.classList.remove('opacity-100');
+				setTimeout(() => {
+					modalContainer.classList.add('hidden');
+				}, 300);
+			}
+
+			// FIREFLY INTERACTIVE CANVAS
+			function initFireflyCanvas() {
+				const canvas = document.getElementById('fireflyCanvas');
+				const ctx = canvas.getContext('2d');
+
+				let width = (canvas.width = window.innerWidth);
+				let height = (canvas.height = window.innerHeight);
+
+				const particles = [];
+				const fireflyCount = Math.min(60, Math.floor((width * height) / 20000));
+				const mouse = { x: null, y: null, radius: 100 };
+
+				// Resize handler
+				window.addEventListener('resize', () => {
+					width = canvas.width = window.innerWidth;
+					height = canvas.height = window.innerHeight;
+				});
+
+				// Interactive mouse events
+				window.addEventListener('mousemove', (e) => {
+					mouse.x = e.clientX;
+					mouse.y = e.clientY;
+				});
+
+				window.addEventListener(
+					'touchmove',
+					(e) => {
+						if (e.touches.length > 0) {
+							mouse.x = e.touches[0].clientX;
+							mouse.y = e.touches[0].clientY;
+						}
+					},
+					{ passive: true },
+				);
+
+				window.addEventListener('mouseleave', () => {
+					mouse.x = null;
+					mouse.y = null;
+				});
+
+				window.addEventListener('touchend', () => {
+					mouse.x = null;
+					mouse.y = null;
+				});
+
+				// Create fireflies
+				class Firefly {
+					constructor() {
+						this.x = Math.random() * width;
+						this.y = Math.random() * height;
+						this.size = Math.random() * 2 + 1;
+						this.speedX = Math.random() * 0.6 - 0.3;
+						this.speedY = Math.random() * 0.6 - 0.3;
+						// Yellow/Green glow color scheme
+						const colorVal = Math.random();
+						this.color = colorVal > 0.5 ? '251, 191, 36' : '45, 212, 191';
+						this.alpha = Math.random() * 0.7 + 0.3;
+						this.angle = Math.random() * Math.PI * 2;
+						this.oscillationSpeed = Math.random() * 0.02 + 0.005;
+					}
+
+					update() {
+						// Wander around
+						this.x += this.speedX + Math.sin(this.angle) * 0.2;
+						this.y += this.speedY + Math.cos(this.angle) * 0.2;
+						this.angle += this.oscillationSpeed;
+
+						// Fade in & out organically
+						this.alpha += Math.random() * 0.04 - 0.02;
+						if (this.alpha < 0.1) this.alpha = 0.1;
+						if (this.alpha > 0.9) this.alpha = 0.9;
+
+						// Boundary collision
+						if (this.x < 0 || this.x > width) this.speedX *= -1;
+						if (this.y < 0 || this.y > height) this.speedY *= -1;
+
+						// Mouse Interaction: attract/glow when near
+						if (mouse.x !== null && mouse.y !== null) {
+							const dx = mouse.x - this.x;
+							const dy = mouse.y - this.y;
+							const distance = Math.sqrt(dx * dx + dy * dy);
+							if (distance < mouse.radius) {
+								// Brighten up and follow slightly
+								this.alpha = Math.min(1.0, this.alpha + 0.05);
+								this.x += dx * 0.02;
+								this.y += dy * 0.02;
+							}
+						}
+					}
+
+					draw() {
+						ctx.save();
+						ctx.shadowBlur = this.size * 4;
+						ctx.shadowColor = `rgba(${this.color}, ${this.alpha})`;
+						ctx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+						ctx.beginPath();
+						ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+						ctx.fill();
+						ctx.restore();
+					}
+				}
+
+				// Init array
+				for (let i = 0; i < fireflyCount; i++) {
+					particles.push(new Firefly());
+				}
+
+				// Ripples on click/tap
+				const ripples = [];
+				window.addEventListener('click', (e) => {
+					if (
+						e.target.tagName !== 'BUTTON' &&
+						!e.target.closest('button') &&
+						!e.target.closest('.glass-panel')
+					) {
+						ripples.push({
+							x: e.clientX,
+							y: e.clientY,
+							radius: 2,
+							maxRadius: 80,
+							alpha: 0.8,
+						});
+					}
+				});
+
+				// Animation Loop
+				function animate() {
+					ctx.clearRect(0, 0, width, height);
+
+					// Update and draw fireflies
+					particles.forEach((firefly) => {
+						firefly.update();
+						firefly.draw();
+					});
+
+					// Update and draw ripples (creates interactive magic water effect)
+					for (let i = ripples.length - 1; i >= 0; i--) {
+						const r = ripples[i];
+						r.radius += 3;
+						r.alpha -= 0.03;
+
+						if (r.alpha <= 0) {
+							ripples.splice(i, 1);
+						} else {
+							ctx.strokeStyle = `rgba(251, 191, 36, ${r.alpha})`;
+							ctx.lineWidth = 1.5;
+							ctx.beginPath();
+							ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+							ctx.stroke();
+						}
+					}
+
+					requestAnimationFrame(animate);
+				}
+
+				animate();
+			}
+		</script>
+	</body>
+</html>
