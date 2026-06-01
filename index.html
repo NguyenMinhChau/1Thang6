@@ -1864,20 +1864,15 @@
 			}
 
 			// Draw sweet candy wish
-			let lastWishIndex = -1;
+			let currentWishIndex = 0;
 			function drawCandyWish() {
 				// Trigger animation on candy button
 				candyBtn.classList.add('scale-90');
 				setTimeout(() => candyBtn.classList.remove('scale-90'), 150);
 
-				// Get random wish without repeating previous one
-				let index;
-				do {
-					index = Math.floor(Math.random() * sweetCandyWishes.length);
-				} while (index === lastWishIndex);
-				lastWishIndex = index;
-
-				const selectedWish = sweetCandyWishes[index];
+				// Get next wish in sequential order and loop back to start when reaching the end
+				const selectedWish = sweetCandyWishes[currentWishIndex];
+				currentWishIndex = (currentWishIndex + 1) % sweetCandyWishes.length;
 
 				// Smooth content switch with fade effect
 				candyBox.style.opacity = 0;
