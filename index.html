@@ -493,6 +493,7 @@
 				width: 100%;
 				height: 100%;
 				object-fit: cover;
+				transition: opacity 0.25s ease-in-out;
 			}
 
 			.bubble-pop-caption {
@@ -503,6 +504,31 @@
 				font-size: 0.8rem;
 				color: rgba(254, 243, 199, 0.85);
 				line-height: 1.3;
+				transition: opacity 0.25s ease-in-out;
+			}
+
+			.bubble-pop-close-btn {
+				position: absolute;
+				top: 6px;
+				right: 6px;
+				color: rgba(255, 255, 255, 0.5);
+				background: rgba(15, 23, 42, 0.6);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+				width: 22px;
+				height: 22px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				z-index: 50;
+			}
+
+			.bubble-pop-close-btn:hover {
+				color: rgba(255, 255, 255, 0.95);
+				background: rgba(239, 68, 68, 0.3);
+				border-color: rgba(239, 68, 68, 0.4);
 			}
 
 			.bubble-pop-heart {
@@ -1445,6 +1471,11 @@
 
 		<!-- AMBIENT FLOATING MEMORY WIDGET & POPUP -->
 		<div id="bubblePolaroidPopup" class="bubble-polaroid-popup">
+			<button id="bubblePopClose" class="bubble-pop-close-btn" aria-label="Đóng">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
 			<span class="bubble-pop-heart">❤️</span>
 			<div class="bubble-pop-image-frame">
 				<img
@@ -1521,6 +1552,7 @@
 			);
 			const bubblePopImage = document.getElementById('bubblePopImage');
 			const bubblePopCaption = document.getElementById('bubblePopCaption');
+			const bubblePopClose = document.getElementById('bubblePopClose');
 
 			// Romantic memories data (30 items)
 			const romanticMemories = [
@@ -1919,6 +1951,9 @@
 
 				// Floating Widget Click Handler
 				floatingMemoryWidget.addEventListener('click', toggleBubblePopup);
+
+				// Floating Widget Close Button Click Handler
+				bubblePopClose.addEventListener('click', closeBubblePopup);
 			}
 
 			// Khởi tạo quả cầu ảnh kỷ niệm xoay 3D
@@ -2163,39 +2198,49 @@
 
 			// Floating widget popup controller
 			function toggleBubblePopup() {
-				if (isBubblePopupOpen) {
-					bubblePolaroidPopup.classList.remove('active');
-					isBubblePopupOpen = false;
-					if (bubbleTimeout) clearTimeout(bubbleTimeout);
-				} else {
-					// Choose a random memory
-					const randomIndex = Math.floor(
-						Math.random() * romanticMemories.length,
-					);
-					const item = romanticMemories[randomIndex];
+				// Choose a random memory
+				const randomIndex = Math.floor(
+					Math.random() * romanticMemories.length,
+				);
+				const item = romanticMemories[randomIndex];
 
+				// Burst hearts from widget location
+				const widgetRect = floatingMemoryWidget.getBoundingClientRect();
+				const x = widgetRect.left + widgetRect.width / 2;
+				const y = widgetRect.top + widgetRect.height / 2;
+
+				for (let i = 0; i < 6; i++) {
+					createHeartParticle(x, y);
+				}
+
+				if (isBubblePopupOpen) {
+					// Smooth fade transition when changing image/caption
+					bubblePopImage.style.opacity = 0;
+					bubblePopCaption.style.opacity = 0;
+					setTimeout(() => {
+						bubblePopImage.src = item.url;
+						bubblePopCaption.innerText = item.caption;
+						bubblePopImage.style.opacity = 1;
+						bubblePopCaption.style.opacity = 1;
+					}, 200);
+				} else {
 					bubblePopImage.src = item.url;
 					bubblePopCaption.innerText = item.caption;
-
-					// Burst hearts from widget location
-					const widgetRect = floatingMemoryWidget.getBoundingClientRect();
-					const x = widgetRect.left + widgetRect.width / 2;
-					const y = widgetRect.top + widgetRect.height / 2;
-
-					for (let i = 0; i < 6; i++) {
-						createHeartParticle(x, y);
-					}
-
+					bubblePopImage.style.opacity = 1;
+					bubblePopCaption.style.opacity = 1;
 					bubblePolaroidPopup.classList.add('active');
 					isBubblePopupOpen = true;
-
-					// Auto close after 6 seconds
-					if (bubbleTimeout) clearTimeout(bubbleTimeout);
-					bubbleTimeout = setTimeout(() => {
-						bubblePolaroidPopup.classList.remove('active');
-						isBubblePopupOpen = false;
-					}, 6000);
 				}
+
+				// Auto close after 10 seconds of inactivity (prolongs/resets if clicked again!)
+				if (bubbleTimeout) clearTimeout(bubbleTimeout);
+				bubbleTimeout = setTimeout(closeBubblePopup, 10000);
+			}
+
+			function closeBubblePopup() {
+				bubblePolaroidPopup.classList.remove('active');
+				isBubblePopupOpen = false;
+				if (bubbleTimeout) clearTimeout(bubbleTimeout);
 			}
 
 			// Coupon interaction
