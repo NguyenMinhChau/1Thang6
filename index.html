@@ -1864,14 +1864,14 @@
 						const diffMs = mDate - now;
 						const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 						statusHtml = `
-							<span class="inline-flex items-center gap-1 text-[10px] bg-teal-500/10 text-teal-300 px-2.5 py-1 rounded-full font-semibold border border-teal-500/20 animate-pulse">
+							<span class="inline-flex items-center gap-1 text-[10px] bg-teal-500/10 text-teal-300 px-2.5 py-1 rounded-full font-semibold border border-teal-500/20 animate-pulse" style="padding: 6px">
 								<span>Sắp Tới (Đếm ngược: ${daysLeft} ngày) ⏳</span>
 							</span>
 						`;
 						cardClass = 'bg-slate-900/60 border-teal-500/30 glow-box-teal';
 					} else {
 						statusHtml = `
-							<span class="inline-flex items-center gap-1 text-[10px] bg-slate-500/10 text-slate-400 px-2.5 py-1 rounded-full font-semibold border border-slate-800">
+							<span class="inline-flex items-center gap-1 text-[10px] bg-slate-500/10 text-slate-400 px-2.5 py-1 rounded-full font-semibold border border-slate-800" style="padding: 6px">
 								<span>Tương Lai 🌸</span>
 							</span>
 						`;
