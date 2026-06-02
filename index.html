@@ -756,6 +756,99 @@
 					opacity: 0;
 				}
 			}
+
+			/* ANNIVERSARY GLOWING BANNER STYLING */
+			.anniversary-banner {
+				background: linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+				backdrop-filter: blur(16px);
+				-webkit-backdrop-filter: blur(16px);
+				border: 1px solid rgba(244, 63, 94, 0.3);
+				box-shadow: 0 0 30px rgba(244, 63, 94, 0.2);
+				border-radius: 20px;
+				padding: 1.5rem 2rem;
+				margin-bottom: 2.5rem;
+				position: relative;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				animation: bannerEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+				cursor: pointer;
+				transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+			}
+			
+			.anniversary-banner:hover {
+				transform: translateY(-2px) scale(1.005);
+				border-color: rgba(244, 63, 94, 0.5);
+				box-shadow: 0 8px 35px rgba(244, 63, 94, 0.35);
+			}
+			
+			.anniversary-banner::before {
+				content: '';
+				position: absolute;
+				top: -50%;
+				left: -50%;
+				width: 200%;
+				height: 200%;
+				background: radial-gradient(circle, rgba(244, 63, 94, 0.08) 0%, transparent 70%);
+				pointer-events: none;
+				animation: bannerGlowPulse 6s infinite ease-in-out;
+			}
+
+			.glow-box-pink {
+				box-shadow: 0 0 25px rgba(244, 63, 94, 0.25);
+			}
+
+			@keyframes bannerEntrance {
+				0% {
+					transform: translateY(-20px) scale(0.95);
+					opacity: 0;
+				}
+				100% {
+					transform: translateY(0) scale(1);
+					opacity: 1;
+				}
+			}
+
+			@keyframes bannerGlowPulse {
+				0%, 100% {
+					transform: scale(1) translate(0, 0);
+					opacity: 0.5;
+				}
+				50% {
+					transform: scale(1.1) translate(3%, 3%);
+					opacity: 0.8;
+				}
+			}
+
+			/* Rising Hearts animation style */
+			.rising-heart {
+				position: fixed;
+				pointer-events: none;
+				font-size: var(--heart-size, 1.8rem);
+				filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.8));
+				animation: riseUp var(--heart-duration, 5s) linear forwards;
+				z-index: 999;
+			}
+
+			@keyframes riseUp {
+				0% {
+					transform: translateY(0) translateX(0) rotate(0deg) scale(0.4);
+					opacity: 0;
+				}
+				10% {
+					opacity: 1;
+					transform: translateY(-10vh) translateX(var(--drift, 15px)) rotate(var(--rot-start, 15deg)) scale(1.1);
+				}
+				90% {
+					opacity: 0.9;
+				}
+				100% {
+					transform: translateY(-105vh) translateX(calc(var(--drift, 15px) * 3)) rotate(var(--rot-end, 120deg)) scale(0.6);
+					opacity: 0;
+				}
+			}
 		</style>
 	</head>
 	<body
@@ -836,7 +929,7 @@
 			<h1
 				class="serif-font text-3xl md:text-4xl text-amber-100 glow-gold font-light tracking-wide text-center px-6 max-w-xl relative z-10"
 			>
-				Gửi Em Bé của anh...
+				Gửi Phương Anh (I'mPA)
 			</h1>
 			<p
 				class="text-slate-400 text-sm mt-3 tracking-widest uppercase relative z-10"
@@ -882,16 +975,13 @@
 						<span
 							class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"
 						></span>
-						<span>TP.HCM, Ngày 1 Tháng 6</span>
+						<span id="dynamicDateHeader">TP.HCM</span>
 					</div>
 					<h2
-						class="serif-font text-2xl font-light text-slate-100 tracking-wide"
+						id="randomSloganHeader"
+						class="serif-font text-xl md:text-2xl font-light text-slate-100 tracking-wide"
 					>
-						Ngày Lễ Của
-						<span class="text-amber-200 glow-gold italic"
-							>Đứa Trẻ Bên Trong</span
-						>
-						Em
+						Nơi Dung Túng 99% Ngọt Ngào & <span class="text-amber-200 glow-gold italic">1% Vô Lý Của</span> Em
 					</h2>
 				</div>
 
@@ -925,9 +1015,10 @@
 					<div>
 						<p class="text-xs text-slate-400 tracking-wider">Đang phát:</p>
 						<p
+							id="musicTrackName"
 							class="text-sm font-medium text-amber-200 truncate max-w-[150px]"
 						>
-							Romantic Piano
+							Đang chọn nhạc...
 						</p>
 					</div>
 					<button
@@ -963,8 +1054,10 @@
 							/>
 						</svg>
 					</button>
-				</div>
 			</header>
+
+			<!-- ANNIVERSARY GLOWING BANNER CONTAINER -->
+			<div id="anniversaryBannerContainer" class="w-full"></div>
 
 			<!-- MAIN LAYOUT -->
 			<main class="grid grid-cols-1 gap-12 md:gap-16">
@@ -992,38 +1085,36 @@
 					</span>
 
 					<h3
+						id="letterHeading"
 						class="serif-font text-3xl md:text-4xl text-amber-100 font-light mb-6 tracking-wide leading-tight"
 					>
-						"Em luôn có thể là một đứa trẻ khi ở bên anh"
+						"Bên anh, em luôn được là chính mình"
 					</h3>
 
 					<div
+						id="letterContent"
 						class="space-y-6 text-slate-300 font-light leading-relaxed text-base md:text-lg"
 					>
 						<p>
 							Gửi em - cô gái luôn kiên cường, tự lập và tràn đầy trách nhiệm
-							mỗi ngày. Cuộc sống của người lớn bận rộn đôi khi bắt em phải
-							khoác lên mình lớp áo mạnh mẽ, đối mặt với deadline, với những mối
-							lo và áp lực không tên.
+							mỗi ngày. Cuộc sống bận rộn đôi khi bắt em phải khoác lên mình lớp áo mạnh mẽ,
+							đối mặt với deadline, với những mối lo và áp lực không tên.
 						</p>
 						<p
 							class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]"
 						>
-							"Nhưng em ơi, trong tim mỗi người trưởng thành luôn có một đứa trẻ
-							cần được chở che. Và ngày 1/6 này, anh muốn dành riêng để bảo bọc
-							đứa trẻ ngọt ngào ấy bên trong em."
+							"Nhưng em ơi, dù em có 'cân' cả thế giới ngoài kia giỏi đến thế nào, thì khi ở bên anh,
+							em cứ việc bật chế độ lười biếng, thỉnh thoảng hờn dỗi một chút cũng chẳng sao. Anh hứa
+							sẽ luôn đứng về phía em (ngay cả những lúc em vô lý nhất!)."
 						</p>
 						<p>
-							Hôm nay, em không cần phải làm một cô nàng lý trí hay đảm đang của
-							bất kỳ ai. Hôm nay, em chỉ cần là một "Bé Ngoan" được quyền hờn
-							dỗi, được yêu chiều, được ăn những món ngon lành và mỉm cười thật
-							rạng rỡ mà không cần lo nghĩ gì cả.
+							Mỗi khi bước vào khu vườn này, em không cần phải cố gắng làm một cô gái chín chắn hay đảm đang của
+							bất kỳ ai. Hãy cứ thoải mái làm nũng, ăn những món em thích, luyên thuyên những chuyện nhỏ nhặt trên trời dưới đất và mỉm cười thật
+							rạng rỡ. Mọi lo toan ngoài kia, cứ để anh gánh vác hộ một tay.
 						</p>
 						<p>
-							Cảm ơn em vì đã luôn là một người yêu tuyệt vời, nhưng cũng cảm ơn
-							cả phần trẻ con đáng yêu mà chỉ có anh được may mắn ngắm nhìn.
-							Chúc em một ngày Quốc tế Thiếu nhi hạnh phúc, tràn đầy sự dỗ dành
-							ngọt ngào nhất.
+							Cảm ơn em vì đã chịu đựng một người yêu đôi lúc hơi ngốc nghếch như anh, và cảm ơn em vì luôn mang lại
+							sự ấm áp ngọt ngào cho cuộc đời anh. Mong rằng mỗi ngày bên anh, em đều tìm thấy niềm vui, sự bình yên và thật nhiều tiếng cười.
 						</p>
 					</div>
 
@@ -1046,9 +1137,52 @@
 						>
 							<span
 								class="text-[10px] text-amber-400 uppercase tracking-widest font-semibold text-center leading-none"
-								>Bé Ngoan<br />01/06</span
+								>Độc Quyền<br />Từ Anh</span
 							>
 						</div>
+					</div>
+				</section>
+
+				<!-- SECTION: LOVE ANNIVERSARY MILESTONES (Hành Trình Yêu Thương) -->
+				<section class="glass-panel p-8 md:p-12 rounded-3xl relative overflow-hidden glow-box-gold">
+					<div class="absolute -top-12 -left-12 w-32 h-32 rounded-full bg-amber-500/5 blur-2xl"></div>
+					<div class="absolute -bottom-12 -right-12 w-32 h-32 rounded-full bg-teal-500/5 blur-2xl"></div>
+
+					<div class="text-center max-w-xl mx-auto mb-10">
+						<span class="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-300 text-xs tracking-widest uppercase mb-4 border border-amber-500/20">
+							Hành Trình Kỷ Niệm
+						</span>
+						<h3 class="serif-font text-3xl md:text-4xl text-slate-100 font-light mb-3 tracking-wide leading-tight">
+							Những Cột Mốc Yêu Thương
+						</h3>
+						<p class="text-slate-400 text-sm font-light leading-relaxed">
+							Mỗi ngày bên em là một chương hạnh phúc. Từng giây phút trôi qua đều là những ký ức tuyệt vời được lưu giữ mãi mãi trong trái tim anh.
+						</p>
+					</div>
+
+					<!-- Real-time Love Counter Widget -->
+					<div class="grid grid-cols-4 gap-3 md:gap-6 max-w-lg mx-auto mb-12 p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-inner">
+						<div class="text-center">
+							<p id="loveDays" class="serif-font text-3xl md:text-4xl font-semibold text-amber-300 glow-gold text-center">0</p>
+							<p class="text-[10px] md:text-xs text-slate-400 uppercase tracking-widest mt-1 text-center">Ngày</p>
+						</div>
+						<div class="text-center border-l border-slate-800/80">
+							<p id="loveHours" class="serif-font text-3xl md:text-4xl font-semibold text-amber-300 glow-gold text-center">0</p>
+							<p class="text-[10px] md:text-xs text-slate-400 uppercase tracking-widest mt-1 text-center">Giờ</p>
+						</div>
+						<div class="text-center border-l border-slate-800/80">
+							<p id="loveMins" class="serif-font text-3xl md:text-4xl font-semibold text-amber-300 glow-gold text-center">0</p>
+							<p class="text-[10px] md:text-xs text-slate-400 uppercase tracking-widest mt-1 text-center">Phút</p>
+						</div>
+						<div class="text-center border-l border-slate-800/80">
+							<p id="loveSecs" class="serif-font text-3xl md:text-4xl font-semibold text-amber-300 glow-gold text-center">0</p>
+							<p class="text-[10px] md:text-xs text-slate-400 uppercase tracking-widest mt-1 text-center">Giây</p>
+						</div>
+					</div>
+
+					<!-- Milestones Timeline Grid -->
+					<div id="milestonesTimeline" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<!-- Dynamic milestones generated by JavaScript -->
 					</div>
 				</section>
 
@@ -1120,162 +1254,25 @@
 				<section class="space-y-6">
 					<div class="text-center">
 						<h3 class="serif-font text-2xl text-slate-100 font-light mb-2">
-							Thẻ Đặc Quyền Tuổi Thơ
+							Thẻ Đặc Quyền Yêu Thương
 						</h3>
 						<p class="text-sm text-slate-400 max-w-md mx-auto">
 							Click vào từng chiếc thẻ dưới đây để kích hoạt và gửi yêu cầu "đặc
-							quyền" của em trực tiếp đến anh nhé!
+							quyền" lãng mạn trực tiếp đến anh nhé!
 						</p>
 					</div>
 
-					<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-						<!-- Coupon 1 -->
-						<div
-							class="group relative cursor-pointer"
-							onclick="
-								redeemCoupon(
-									'Vé Ôm Xoa Đầu Vô Hạn',
-									'Đang gửi tín hiệu cần được dỗ dành gấp đến người ấy...',
-								)
-							"
-						>
-							<div
-								class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-							></div>
-							<div
-								class="relative glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-400/30 transition-all duration-300 flex flex-col justify-between h-56"
-							>
-								<div>
-									<div class="flex justify-between items-start">
-										<span
-											class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-1 rounded font-mono"
-											>CODE: EM_BE_01</span
-										>
-										<span class="text-amber-300/80">★</span>
-									</div>
-									<h4
-										class="serif-font text-xl text-amber-100 mt-4 font-normal group-hover:text-amber-300 transition-colors"
-									>
-										Vé Ôm Trầm & Xoa Đầu
-									</h4>
-									<p class="text-xs text-slate-400 mt-2">
-										Dùng bất cứ khi nào em thấy mệt mỏi, áp lực hoặc chỉ đơn
-										giản là thèm cái ôm ấm áp của anh.
-									</p>
-								</div>
-								<div
-									class="flex items-center justify-between border-t border-slate-800/60 pt-3"
-								>
-									<span
-										class="text-[10px] text-slate-400 uppercase tracking-wider"
-										>Hạn dùng: Mãi mãi</span
-									>
-									<span
-										class="text-xs text-amber-400 font-medium group-hover:underline"
-										>Bấm nhận ngay →</span
-									>
-								</div>
-							</div>
-						</div>
+					<div id="couponsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-500">
+						<!-- JavaScript will inject cards dynamically here -->
+					</div>
 
-						<!-- Coupon 2 -->
-						<div
-							class="group relative cursor-pointer"
-							onclick="
-								redeemCoupon(
-									'Vé Trốn Cả Thế Giới',
-									'Tín hiệu tắt điện thoại và cùng nhau đi trốn đã được ghi nhận!',
-								)
-							"
+					<div class="flex justify-center mt-12" style="margin-top: 30px">
+						<button
+							id="shuffleCouponsBtn"
+							class="px-8 py-3 rounded-full border border-teal-300/30 text-teal-200 hover:text-teal-100 hover:bg-teal-500/10 hover:border-teal-300/60 transition-all duration-500 tracking-widest text-xs uppercase flex items-center gap-3"
 						>
-							<div
-								class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-							></div>
-							<div
-								class="relative glass-panel p-6 rounded-2xl border border-slate-800 hover:border-teal-400/30 transition-all duration-300 flex flex-col justify-between h-56"
-							>
-								<div>
-									<div class="flex justify-between items-start">
-										<span
-											class="text-[10px] bg-teal-500/10 text-teal-300 px-2 py-1 rounded font-mono"
-											>CODE: DING_DONG</span
-										>
-										<span class="text-teal-300/80">✿</span>
-									</div>
-									<h4
-										class="serif-font text-xl text-teal-200 mt-4 font-normal group-hover:text-teal-300 transition-colors"
-									>
-										Một Ngày Trốn Việc
-									</h4>
-									<p class="text-xs text-slate-400 mt-2">
-										Một ngày không laptop, không deadline. Anh sẽ chuẩn bị đồ ăn
-										và chở em đi ngắm phố phường.
-									</p>
-								</div>
-								<div
-									class="flex items-center justify-between border-t border-slate-800/60 pt-3"
-								>
-									<span
-										class="text-[10px] text-slate-400 uppercase tracking-wider"
-										>Hạn dùng: Ngày em mỏi mệt</span
-									>
-									<span
-										class="text-xs text-teal-300 font-medium group-hover:underline"
-										>Bấm nhận ngay →</span
-									>
-								</div>
-							</div>
-						</div>
-
-						<!-- Coupon 3 -->
-						<div
-							class="group relative cursor-pointer"
-							onclick="
-								redeemCoupon(
-									'Vé Món Ngon Xoa Dịu',
-									'Chuyến xe giao hàng ngọt ngào đang được điều phối...',
-								)
-							"
-						>
-							<div
-								class="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-teal-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-							></div>
-							<div
-								class="relative glass-panel p-6 rounded-2xl border border-slate-800 hover:border-pink-400/30 transition-all duration-300 flex flex-col justify-between h-56"
-							>
-								<div>
-									<div class="flex justify-between items-start">
-										<span
-											class="text-[10px] bg-pink-500/10 text-pink-300 px-2 py-1 rounded font-mono"
-											>CODE: SWEET_TREAT</span
-										>
-										<span class="text-pink-300/80">❤</span>
-									</div>
-									<h4
-										class="serif-font text-xl text-pink-200 mt-4 font-normal group-hover:text-pink-300 transition-colors"
-									>
-										Ăn Uống Thả Phanh
-									</h4>
-									<p class="text-xs text-slate-400 mt-2">
-										Trà sữa sương sương, bánh ngọt thơm lừng hoặc bất cứ món gì
-										em muốn. Đừng lo béo nhé, em bé thì phải tròn trịa mới đáng
-										yêu.
-									</p>
-								</div>
-								<div
-									class="flex items-center justify-between border-t border-slate-800/60 pt-3"
-								>
-									<span
-										class="text-[10px] text-slate-400 uppercase tracking-wider"
-										>Hạn dùng: Bất kì lúc nào thèm</span
-									>
-									<span
-										class="text-xs text-pink-300 font-medium group-hover:underline"
-										>Bấm nhận ngay →</span
-									>
-								</div>
-							</div>
-						</div>
+							<span>Đổi Thẻ Đặc Quyền Khác 🔄</span>
+						</button>
 					</div>
 				</section>
 
@@ -1340,9 +1337,11 @@
 
 				<!-- FOOTER WITH SWEET STATEMENTS -->
 				<section class="text-center space-y-4 py-8 border-t border-slate-900">
-					<p class="serif-font text-lg text-slate-300 italic font-light">
-						"Chúc em bé của anh luôn có những đêm ngon giấc, những ngày thảnh
-						thơi, và luôn biết rằng mình được yêu thương vô điều kiện."
+					<p
+						id="randomFooterStatement"
+						class="serif-font text-base md:text-lg text-slate-300 italic font-light px-4"
+					>
+						"Chúc em luôn có những đêm ngon giấc, những ngày thảnh thơi, và luôn biết rằng phía sau em luôn có anh đồng hành."
 					</p>
 					<p class="text-xs text-slate-600 tracking-widest uppercase">
 						Trang web được thiết kế đặc biệt dành cho em
@@ -1508,15 +1507,413 @@
 		<div id="memoryStreamOverlay" class="memory-stream-container"></div>
 
 		<!-- AUDIO ELEMENT -->
-		<audio id="bgMusic" loop preload="none">
-			<source
-				src="./paulyudin-romantic-romantic-music-493488.mp3"
-				type="audio/mpeg"
-			/>
+		<audio id="bgMusic" loop preload="auto">
 			Trình duyệt của bạn không hỗ trợ phát nhạc tự động.
 		</audio>
 
 		<script>
+			// ==========================================
+			// CẤU HÌNH NGÀY KỶ NIỆM (20/03)
+			// ==========================================
+			const RELATIONSHIP_START_YEAR = 2026; // Bạn hãy thay đổi năm ở đây nếu khác 2024 (Ví dụ: 2025, 2023...)
+			const RELATIONSHIP_START_MONTH = 2;   // Tháng 3 trong JavaScript là 2 (0-indexed: Tháng 1 = 0, Tháng 2 = 1, Tháng 3 = 2)
+			const RELATIONSHIP_START_DAY = 20;    // Ngày 20
+
+			// ==========================================
+			// CHẾ ĐỘ NGÀY KỶ NIỆM ĐỘC QUYỀN
+			// ==========================================
+			const isAnniversaryDay = new Date().getDate() === RELATIONSHIP_START_DAY;
+
+			// Kho dữ liệu lời chúc kỷ niệm tháng ngẫu nhiên (Ngọt ngào & Lập trình hóm hỉnh)
+			const anniversaryMonthlyWishes = [
+				{
+					bannerTitle: "💖 MỪNG KỶ NIỆM ${months} THÁNG ĐỒNG HÀNH 💖",
+					bannerSub: "Cột mốc ${months} tháng ngọt ngào bên em. Nụ cười và hạnh phúc của Phương Anh chính là dự án lớn nhất và duy nhất mà anh theo đuổi suốt đời!",
+					modalTitle: "💖 Chúc Mừng Ngày Kỷ Niệm Tháng!",
+					modalMsg: "Hôm nay là ngày kỷ niệm <strong>${months} tháng</strong> ngọt ngào bên nhau của chúng mình! 🥳<br><br>Anh vô cùng trân trọng từng ngày được chăm sóc, lắng nghe và nuông chiều em. Chúc cô gái của anh luôn rạng rỡ, ngập tràn tiếng cười và niềm vui!<br><br>Dưới bầu trời đầy sao lấp lánh này, anh hứa sẽ tiếp tục nâng cấp phiên bản yêu chiều em lên mức tối đa! 🧸"
+				},
+				{
+					bannerTitle: "🧸 KỶ NIỆM ${months} THÁNG NGỌT NGÀO 🧸",
+					bannerSub: "Đã ${months} tháng trôi qua kể từ khi trái tim anh dính phải loại virus cực kỳ cứng đầu mang tên em. Anh đã gỡ cài đặt bộ lọc phòng thủ và nguyện để em cư ngụ trọn đời!",
+					modalTitle: "🧸 Mừng Tròn ${months} Tháng Yêu Thương!",
+					modalMsg: "Chào cô người yêu siêu cấp đáng yêu của anh! Tròn <strong>${months} tháng</strong> bên nhau rồi đó. 🥰<br><br>Cảm ơn em đã luôn mang sự ấm áp, ngọt ngào và cả những trò đùa vô tri siêu cưng vào thế giới của anh. Chúc em luôn hạnh phúc, xinh đẹp và hãy nhớ rằng đặc quyền được làm nũng anh là trọn đời nha! ❤️"
+				},
+				{
+					bannerTitle: "✨ TRÒN ${months} THÁNG SI TÌNH VÀ CHIỀU EM ✨",
+					bannerSub: "Chỉ mới ${months} tháng mà CPU trái tim anh đã ghi nhận hàng tỷ chu kỳ nhịp đập chỉ để hướng về em. Server cuộc sống có thể chập chênh nhưng đường truyền yêu em luôn 100% ổn định!",
+					modalTitle: "✨ Trạm Sạc Tình Yêu: Cột Mốc ${months} Tháng!",
+					modalMsg: "Chúc mừng kỷ niệm <strong>${months} tháng</strong> của hai đứa mình! 🥂<br><br>Cảm ơn Phương Anh vì đã chịu đựng một anh người yêu đôi lúc hơi ngốc nghếch này. Anh vô cùng hạnh phúc vì mỗi ngày đều có em kề cạnh, luyên thuyên đủ thứ chuyện trên đời. Mong em luôn có những giấc mơ thật ngọt ngào! 🍬"
+				},
+				{
+					bannerTitle: "🌹 ${months} THÁNG BÊN EM - VÒNG LẶP HẠNH PHÚC 🌹",
+					bannerSub: "Trải qua ${months} tháng bên nhau, thuật toán tình yêu của anh đã tối ưu hóa hoàn toàn: mọi logic phức tạp đều bị nụ cười của em đánh bại trong 1 mili-giây!",
+					modalTitle: "🌹 Kỷ Niệm ${months} Tháng Bên Nhau!",
+					modalMsg: "Mừng kỷ niệm <strong>${months} tháng</strong> ngọt ngào của tụi mình nha! 🎉<br><br>Hôm nay em có đặc quyền yêu cầu anh làm bất cứ điều gì (kể cả những đòi hỏi vô lý nhất). Anh hứa sẽ luôn đứng về phía em, nuông chiều em vô điều kiện và bảo vệ em đi qua mọi giông bão cuộc đời! 🌸"
+				}
+			];
+
+			// Kho dữ liệu lời chúc kỷ niệm năm ngẫu nhiên (Lãng mạn & Hài hước)
+			const anniversaryYearlyWishes = [
+				{
+					bannerTitle: "🌹 CHÚC MỪNG KỶ NIỆM ${years} NĂM YÊU NHAU 🌹",
+					bannerSub: "Hành trình ${years} năm gắn bó đong đầy yêu thương. Anh hứa sẽ luôn nuông chiều, bảo vệ và đồng hành cùng Phương Anh đi đến tận cùng thế giới trọn đời!",
+					modalTitle: "🌹 Kỷ Niệm ${years} Năm Ngày Chung Đôi!",
+					modalMsg: "Chúc mừng kỷ niệm <strong>${years} năm</strong> ngày hai đứa mình chính thức bên nhau! 🥰<br><br>Cảm ơn Phương Anh - cô gái tuyệt vời nhất của anh - vì đã luôn ở bên, chia sẻ và đồng hành cùng anh đi qua mọi cung bậc cảm xúc.<br><br>Hành trình này sẽ còn kéo dài trọn đời và mãi mãi. Trái tim anh đã được lập trình sẵn và cam kết bảo hành yêu chiều em vĩnh viễn! ❤️"
+				},
+				{
+					bannerTitle: "💍 KỶ NIỆM ${years} NĂM HẠNH PHÚC NGẬP TRÀN 💍",
+					bannerSub: "Hành trình ${years} năm gắn bó, anh đã chính thức ghim em làm khóa chính (Primary Key) duy nhất của cuộc đời mình. Không có xung đột hệ thống nào xảy ra khi em luôn đúng 100%!",
+					modalTitle: "💍 Tròn ${years} Năm Si Tình Không Lối Thoát!",
+					modalMsg: "Tròn <strong>${years} năm</strong> bên nhau, tình yêu của anh dành cho em vẫn tăng theo cấp số nhân mỗi ngày! 🥳<br><br>Cảm ơn em vì đã luôn là chỗ dựa tinh thần bình yên nhất của anh sau những giờ làm việc căng thẳng. Chúc cô gái của anh luôn xinh đẹp, tự tin và ngập tràn hạnh phúc. Anh nguyện đèo em đi ăn sập cả thế giới trọn đời! 🧸"
+				},
+				{
+					bannerTitle: "💖 MỐC SON ${years} NĂM RỰC RỠ SẮC MÀU 💖",
+					bannerSub: "Tròn ${years} năm hệ điều hành tình yêu của anh chạy mượt mà dưới sự quản trị tối cao của admin Phương Anh. Cảm ơn em vì đã chịu đựng phiên bản nhiều bug này và luôn thương anh!",
+					modalTitle: "💖 Chúc Mừng ${years} Năm Hai Ta Thuộc Về Nhau!",
+					modalMsg: "Chúc mừng <strong>${years} năm</strong> ngày ta thuộc về nhau! 🥂<br><br>Cảm ơn em vì đã cùng anh chia sẻ từng cái ôm ấm áp, những buổi chiều hoàng hôn lãng mạn và cả những nụ cười rạng rỡ đầy ắp tình thương. Mong rằng chặng đường phía trước tụi mình sẽ viết tiếp những chương thật đẹp cùng nhau. Yêu em vô điều kiện! 💕"
+				}
+			];
+
+			let selectedAnniversaryWish = null;
+
+			function selectRandomAnniversaryWish() {
+				if (!isAnniversaryDay) return;
+
+				const startDate = new Date(RELATIONSHIP_START_YEAR, RELATIONSHIP_START_MONTH, RELATIONSHIP_START_DAY);
+				const now = new Date();
+				let monthsElapsed = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
+				if (now.getDate() < RELATIONSHIP_START_DAY) {
+					monthsElapsed--;
+				}
+
+				const isYearly = monthsElapsed > 0 && monthsElapsed % 12 === 0;
+				const years = monthsElapsed / 12;
+
+				if (isYearly) {
+					const idx = Math.floor(Math.random() * anniversaryYearlyWishes.length);
+					const tpl = anniversaryYearlyWishes[idx];
+					selectedAnniversaryWish = {
+						bannerTitle: tpl.bannerTitle.replace('${years}', years),
+						bannerSub: tpl.bannerSub.replace('${years}', years),
+						modalTitle: tpl.modalTitle.replace('${years}', years),
+						modalMsg: tpl.modalMsg.replace('${years}', years)
+					};
+				} else {
+					const idx = Math.floor(Math.random() * anniversaryMonthlyWishes.length);
+					const tpl = anniversaryMonthlyWishes[idx];
+					selectedAnniversaryWish = {
+						bannerTitle: tpl.bannerTitle.replace('${months}', monthsElapsed),
+						bannerSub: tpl.bannerSub.replace('${months}', monthsElapsed),
+						modalTitle: tpl.modalTitle.replace('${months}', monthsElapsed),
+						modalMsg: tpl.modalMsg.replace('${months}', monthsElapsed)
+					};
+				}
+			}
+
+			function renderAnniversaryBanner() {
+				const bannerContainer = document.getElementById('anniversaryBannerContainer');
+				if (!bannerContainer) return;
+
+				if (!isAnniversaryDay || !selectedAnniversaryWish) {
+					bannerContainer.innerHTML = '';
+					return;
+				}
+
+				bannerContainer.innerHTML = `
+					<div class="anniversary-banner" title="Chạm để xem lại thiệp chúc mừng lộng lẫy 💌">
+						<span class="absolute top-3 left-3 text-pink-500/40 animate-pulse text-lg">🌹</span>
+						<span class="absolute top-3 right-3 text-pink-500/40 animate-pulse text-lg" style="animation-delay: 0.5s">✨</span>
+						<span class="absolute bottom-3 left-3 text-pink-500/40 animate-pulse text-lg" style="animation-delay: 1s">💖</span>
+						<span class="absolute bottom-3 right-3 text-pink-500/40 animate-pulse text-lg" style="animation-delay: 1.5s">💍</span>
+						
+						<h3 class="serif-font text-2xl md:text-3xl font-semibold text-pink-300 mb-2 uppercase tracking-wide" style="text-shadow: 0 0 15px rgba(244,63,94,0.6)">
+							${selectedAnniversaryWish.bannerTitle}
+						</h3>
+						<p class="text-sm md:text-base text-slate-100 font-light leading-relaxed max-w-2xl italic">
+							"${selectedAnniversaryWish.bannerSub}"
+						</p>
+						<div class="mt-4 flex items-center justify-center gap-2">
+							<span class="inline-flex items-center gap-1.5 text-xs bg-pink-500/20 text-pink-300 px-3 py-1.5 rounded-full font-bold border border-pink-500/30 animate-pulse">
+								💌 Chạm vào biểu ngữ này bất cứ lúc nào để xem lại thiệp chúc mừng! 💌
+							</span>
+						</div>
+					</div>
+				`;
+
+				// Đăng ký sự kiện click vào banner để mở lại popup chúc mừng + hiệu ứng tim bay lấp lánh
+				const bannerCard = bannerContainer.querySelector('.anniversary-banner');
+				if (bannerCard) {
+					bannerCard.addEventListener('click', () => {
+						const rect = bannerCard.getBoundingClientRect();
+						const bx = rect.left + rect.width / 2;
+						const by = rect.top + rect.height / 2;
+						
+						for (let i = 0; i < 8; i++) {
+							setTimeout(() => {
+								createHeartParticle(bx, by);
+							}, i * 50);
+						}
+						
+						triggerAnniversaryWelcomeModal();
+					});
+				}
+			}
+
+			function triggerAnniversaryHeartRain() {
+				if (!isAnniversaryDay) return;
+				
+				// Sinh ra 40 hạt trái tim bay từ dưới đáy màn hình lên trong 3.5s
+				let count = 0;
+				const interval = setInterval(() => {
+					if (count >= 40) {
+						clearInterval(interval);
+						return;
+					}
+					const x = Math.random() * window.innerWidth;
+					const y = window.innerHeight + 20;
+					
+					const heart = document.createElement('span');
+					heart.classList.add('rising-heart');
+					heart.innerHTML = ['❤️', '💖', '💝', '💕', '✨'][Math.floor(Math.random() * 5)];
+
+					const drift = Math.random() * 60 - 30;
+					const rotStart = Math.random() * 30 - 15;
+					const rotMid = Math.random() * 180 + 90;
+					const rotEnd = Math.random() * 360 + 180;
+					const duration = Math.random() * 2 + 3.5; // 3.5s - 5.5s
+					const size = Math.random() * 0.6 + 0.9; // 0.9x - 1.5x
+
+					heart.style.setProperty('--drift', `${drift}px`);
+					heart.style.setProperty('--rot-start', `${rotStart}deg`);
+					heart.style.setProperty('--rot-mid', `${rotMid}deg`);
+					heart.style.setProperty('--rot-end', `${rotEnd}deg`);
+					heart.style.setProperty('--heart-duration', `${duration}s`);
+					heart.style.setProperty('--heart-size', `${size}rem`);
+
+					heart.style.left = `${x}px`;
+					heart.style.top = `${y}px`;
+
+					document.body.appendChild(heart);
+
+					setTimeout(() => {
+						heart.remove();
+					}, duration * 1000);
+
+					count++;
+				}, 90);
+			}
+
+			function triggerAnniversaryWelcomeModal() {
+				if (!isAnniversaryDay || !selectedAnniversaryWish) return;
+
+				// Modify the existing modal container elements dynamically
+				const modalBox = modalContainer.querySelector('.glass-panel');
+				const modalIcon = modalBox.querySelector('div');
+				const modalBtn = modalBox.querySelector('button');
+
+				// Add rose/pink theme classes
+				modalBox.classList.add('border-pink-500/40', 'glow-box-pink');
+				modalBox.classList.remove('border-amber-500/20', 'glow-box-gold');
+
+				modalIcon.innerHTML = `
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+					</svg>
+				`;
+				modalIcon.classList.add('bg-pink-500/10', 'text-pink-400', 'border-pink-500/20');
+				modalIcon.classList.remove('bg-amber-500/10', 'text-amber-400', 'border-amber-500/20');
+
+				modalTitle.innerText = selectedAnniversaryWish.modalTitle;
+				modalTitle.classList.add('text-pink-300');
+				modalTitle.classList.remove('text-amber-200');
+
+				modalMessage.innerHTML = selectedAnniversaryWish.modalMsg;
+				
+				modalBtn.innerText = "Yêu Anh Nhiều Hơn 🥰";
+				modalBtn.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-rose-500', 'text-white', 'hover:from-pink-600', 'hover:to-rose-600', 'border-0');
+				modalBtn.classList.remove('bg-amber-500', 'hover:bg-amber-600', 'text-slate-950');
+
+				// Display modal
+				modalContainer.classList.remove('hidden');
+				setTimeout(() => {
+					modalContainer.classList.add('opacity-100');
+				}, 50);
+
+				// Override click to close and restore styles
+				modalBtn.onclick = function() {
+					closeModal();
+					setTimeout(() => {
+						// Restore standard styling after transition
+						modalBox.classList.remove('border-pink-500/40', 'glow-box-pink');
+						modalBox.classList.add('border-amber-500/20', 'glow-box-gold');
+
+						modalIcon.innerHTML = `
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+						`;
+						modalIcon.classList.add('bg-amber-500/10', 'text-amber-400', 'border-amber-500/20');
+						modalIcon.classList.remove('bg-pink-500/10', 'text-pink-400', 'border-pink-500/20');
+
+						modalTitle.innerText = "Đã nhận đặc quyền";
+						modalTitle.classList.remove('text-pink-300');
+						modalTitle.classList.add('text-amber-200');
+
+						modalMessage.innerHTML = "Tín hiệu đáng yêu đã được gửi trực tiếp đến trái tim anh ấy.";
+						
+						modalBtn.innerText = "Tuyệt vời quá";
+						modalBtn.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-rose-500', 'text-white', 'hover:from-pink-600', 'hover:to-rose-600', 'border-0');
+						modalBtn.classList.add('bg-amber-500', 'hover:bg-amber-600', 'text-slate-950');
+						
+						modalBtn.onclick = closeModal;
+					}, 400);
+				};
+			}
+
+			function updateLoveCounter() {
+				const startDate = new Date(RELATIONSHIP_START_YEAR, RELATIONSHIP_START_MONTH, RELATIONSHIP_START_DAY);
+				const now = new Date();
+				const diffMs = now - startDate;
+
+				if (diffMs < 0) {
+					document.getElementById('loveDays').innerText = "0";
+					document.getElementById('loveHours').innerText = "0";
+					document.getElementById('loveMins').innerText = "0";
+					document.getElementById('loveSecs').innerText = "0";
+					return;
+				}
+
+				const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+				const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+				const diffSecs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+				document.getElementById('loveDays').innerText = diffDays;
+				document.getElementById('loveHours').innerText = diffHours;
+				document.getElementById('loveMins').innerText = diffMins;
+				document.getElementById('loveSecs').innerText = diffSecs;
+			}
+
+			function renderMilestones() {
+				const timeline = document.getElementById('milestonesTimeline');
+				if (!timeline) return;
+
+				const startDate = new Date(RELATIONSHIP_START_YEAR, RELATIONSHIP_START_MONTH, RELATIONSHIP_START_DAY);
+				const now = new Date();
+
+				// Tính số năm hiện tại kể từ ngày bắt đầu
+				let currentYears = now.getFullYear() - startDate.getFullYear();
+				// Điều chỉnh nếu chưa qua ngày kỷ niệm của năm nay
+				const currentAnniversaryThisYear = new Date(now.getFullYear(), RELATIONSHIP_START_MONTH, RELATIONSHIP_START_DAY);
+				if (now < currentAnniversaryThisYear) {
+					currentYears--;
+				}
+				if (currentYears < 0) currentYears = 0;
+
+				const milestones = [
+					{ type: 'month', value: 3, label: '3 Tháng', desc: '3 tháng ngọt ngào bên em, nụ cười em vẫn là điều anh trân trọng nhất đời anh.' },
+					{ type: 'month', value: 6, label: '6 Tháng (Nửa Năm)', desc: 'Nửa năm đi qua, cùng em trải qua những cơn mưa rào Sài Gòn và những cái ôm êm đềm.' }
+				];
+
+				// Tự động tạo mốc từ năm 1 đến số năm hiện tại cộng thêm 3 năm nữa trong tương lai
+				const maxYearsToShow = Math.max(5, currentYears + 3); 
+				for (let y = 1; y <= maxYearsToShow; y++) {
+					let descText = '';
+					if (y === 1) descText = 'Tròn 1 năm yêu nhau! Trái tim anh chính thức lập trình trọn đời dành cho em.';
+					else if (y === 2) descText = '2 năm đồng hành si tình. Em vẫn là khóa chính (Primary Key) duy nhất của anh.';
+					else if (y === 3) descText = '3 năm gắn bó bền chặt. Cảm ơn em đã luôn bên anh và cùng viết tiếp kỷ niệm.';
+					else if (y === 4) descText = '4 năm thấu hiểu và yêu thương, cùng vẽ nên tương lai ngập nắng hạnh phúc.';
+					else if (y === 5) descText = '5 năm trọn vẹn yêu chiều. Hành trình dài phía trước nguyện mãi đi cùng em.';
+					else {
+						descText = `Hành trình ${y} năm đong đầy hạnh phúc. Anh hứa sẽ luôn ở đây nuông chiều, yêu thương và đồng hành cùng em đi đến tận cùng thế giới!`;
+					}
+					
+					milestones.push({
+						type: 'year',
+						value: y,
+						label: `${y} Năm`,
+						desc: descText
+					});
+				}
+
+				timeline.innerHTML = '';
+				let foundNext = false;
+
+				milestones.forEach((m) => {
+					const mDate = new Date(startDate);
+					if (m.type === 'month') {
+						mDate.setMonth(startDate.getMonth() + m.value);
+					} else {
+						mDate.setFullYear(startDate.getFullYear() + m.value);
+					}
+
+					const dateStr = `${mDate.getDate().toString().padStart(2, '0')}/${(mDate.getMonth() + 1).toString().padStart(2, '0')}/${mDate.getFullYear()}`;
+					
+					let statusHtml = '';
+					let cardClass = '';
+					
+					if (now >= mDate) {
+						statusHtml = `
+							<span class="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-amber-300 px-2.5 py-1 rounded-full font-semibold border border-amber-500/20">
+								<span>Đã Đạt Được 🎉</span>
+							</span>
+						`;
+						cardClass = 'bg-slate-900/40 border-amber-500/20';
+					} else if (!foundNext) {
+						foundNext = true;
+						const diffMs = mDate - now;
+						const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+						statusHtml = `
+							<span class="inline-flex items-center gap-1 text-[10px] bg-teal-500/10 text-teal-300 px-2.5 py-1 rounded-full font-semibold border border-teal-500/20 animate-pulse">
+								<span>Sắp Tới (Đếm ngược: ${daysLeft} ngày) ⏳</span>
+							</span>
+						`;
+						cardClass = 'bg-slate-900/60 border-teal-500/30 glow-box-teal';
+					} else {
+						statusHtml = `
+							<span class="inline-flex items-center gap-1 text-[10px] bg-slate-500/10 text-slate-400 px-2.5 py-1 rounded-full font-semibold border border-slate-800">
+								<span>Tương Lai 🌸</span>
+							</span>
+						`;
+						cardClass = 'bg-slate-900/20 border-slate-800/60 opacity-60';
+					}
+
+					const card = document.createElement('div');
+					card.className = `relative p-6 rounded-2xl border transition-all duration-500 ${cardClass} hover:translate-y-[-2px] hover:border-amber-500/30`;
+					card.innerHTML = `
+						<div class="flex justify-between items-start mb-3">
+							<h4 class="serif-font text-lg font-medium text-slate-100">${m.label}</h4>
+							${statusHtml}
+						</div>
+						<p class="text-xs text-slate-400 font-mono mb-2">Ngày kỷ niệm: ${dateStr}</p>
+						<p class="text-sm text-slate-300 font-light leading-relaxed">${m.desc}</p>
+					`;
+					
+					timeline.appendChild(card);
+				});
+
+				// Append a special, beautiful glowing card for the Lifetime Promise at the very end of the grid!
+				const foreverCard = document.createElement('div');
+				foreverCard.className = `relative p-6 rounded-2xl border transition-all duration-500 bg-gradient-to-br from-pink-500/10 to-rose-500/10 border-pink-500/30 hover:translate-y-[-2px] hover:border-pink-500/60 md:col-span-2 text-center flex flex-col items-center justify-center py-10`;
+				foreverCard.style.boxShadow = '0 0 30px rgba(244, 63, 94, 0.15)';
+				
+				foreverCard.innerHTML = `
+					<div class="flex flex-col items-center justify-center mb-3">
+						<span class="text-3xl mb-2 animate-bounce" style="animation-duration: 2.5s">💍</span>
+						<h4 class="serif-font text-2xl font-semibold text-pink-300" style="text-shadow: 0 0 12px rgba(244, 63, 94, 0.4);">Trọn Đời & Mãi Mãi</h4>
+						<span class="mt-2 inline-flex items-center gap-1 text-[10px] bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full font-bold border border-pink-500/30 animate-pulse">
+							<span>Lời Hứa Trọn Đời ♾️</span>
+						</span>
+					</div>
+					<p class="text-xs text-pink-400/90 font-mono mb-3">Ngày kỷ niệm: Trọn Đời Bên Nhau</p>
+					<p class="text-base text-slate-100 font-light leading-relaxed max-w-xl italic">
+						"Tình cảm này đã được lập trình bằng vòng lặp vô hạn (infinite loop) không có lệnh break. Máy chủ tình yêu của anh xin bàn giao 100% quyền quản trị tối cao cho em. Anh hứa sẽ luôn kiên nhẫn sửa mọi 'bug' tâm trạng của em bằng trà sữa, chịu đựng sự đanh đá đáng yêu và đèo em đi ăn sập cả thế giới trọn đời. Cam kết bảo hành yêu thương vĩnh cửu không cần hóa đơn!"
+					</p>
+				`;
+				
+				timeline.appendChild(foreverCard);
+			}
+
 			// DOM Elements
 			const introOverlay = document.getElementById('introOverlay');
 			const mainContent = document.getElementById('mainContent');
@@ -1687,16 +2084,57 @@
 				},
 			];
 
-			// Sweet wishes database
 			const sweetCandyWishes = [
 				'🍬 [Lời hứa] Cuối tuần này anh sẽ đưa em đi ăn món lẩu yêu thích nhất của em, ăn no nê không cần nhìn cân nặng nha!',
 				'🍭 [Yêu chiều] Tối nay anh sẽ mát-xa vai và gội đầu dưỡng sinh tại gia cho em thoải mái nhất sau ngày dài mệt mỏi.',
-				"🍫 [Chiều chuộng] 'Hôm nay em chỉ cần làm em bé, tất cả những việc rắc rối ngoài kia cứ để anh lo nhé.'",
+				"🍫 [Chiều chuộng] 'Mọi áp lực và rắc rối ngoài kia cứ để anh lo, em chỉ việc luôn vui vẻ và rạng rỡ là đủ rồi.'",
 				'🍬 [Lãng mạn] Một ngày ngập tràn những món quà nhỏ ngẫu nhiên không nhân dịp gì cả, chỉ vì anh thích thấy nụ cười của em.',
-				'🍭 [Sự thật] Trong mắt anh, khoảnh khắc em cười lúc được ăn ngon chính là hình ảnh đáng yêu nhất trần đời.',
-				'🍫 [Trái tim] Bất kỳ lúc nào em muốn dỗi, hãy cứ dỗi. Anh hứa sẽ luôn kiên nhẫn dỗ dành em bé bướng bỉnh này.',
-				'🍬 [Bảo vệ] Anh luôn tự hào về sự trưởng thành của em, nhưng anh càng trân quý những lúc em chịu yếu lòng dựa vào vai anh.',
-				'🍭 [Ước nguyện] Mong cô gái của anh ngày nào cũng là 1/6, được vui tươi, được bảo bọc và không lo sợ giông bão.',
+				"🍭 [Sự thật] Trong mắt anh, khoảnh khắc em cười khi được ăn ngon (hoặc khi 'nói xấu' ai đó) là lúc em đáng yêu nhất trần đời!",
+				'🍫 [Trái tim] Bất kỳ lúc nào em muốn dỗi, hãy cứ dỗi. Anh hứa sẽ luôn kiên nhẫn dỗ dành cô người yêu bướng bỉnh nhưng vô cùng đáng yêu này.',
+				"🍬 [Bảo vệ] Anh vô cùng tự hào vì em giỏi giang và độc lập, nhưng anh cũng rất thích những lúc em chịu 'xuống nước' dựa vào bờ vai anh.",
+				'🍭 [Ước nguyện] Mong cho nụ cười của em luôn rạng rỡ như thế, và mỗi ngày bên anh đều là một ngày bình yên, không lo toan giông bão.',
+				'🍬 [Hài hước] Nụ cười của em có tác dụng chống trầm cảm tốt hơn mọi loại thuốc trên đời, khuyến nghị sử dụng ít nhất 10 lần mỗi ngày!',
+				'🍭 [Bí mật] Mỗi lần em quay đi, anh đều lén ngắm nhìn em rồi tự cười một mình như một kẻ ngốc đấy!',
+				'🍫 [Thử thách] Hãy nhắm mắt lại trong 3 giây, khi mở ra em sẽ nhận được một cái ôm cực kỳ ấm áp từ anh (nếu anh đang ở cạnh nhé!).',
+				'🍬 [Lãng mạn] Gặp được em là điều tuyệt vời nhất, yêu em là quyết định đúng đắn nhất, và có em là hạnh phúc lớn nhất của đời anh.',
+				'🍭 [Dỗ dành] Dù ngoài kia cả thế giới có quay lưng với em, thì anh vẫn luôn đứng đây, che chở và là hậu phương trung thành nhất của em.',
+				'🍫 [Sự thật] Không có một thuật toán hay dòng code nào có thể định nghĩa được sự đáng yêu vô tận của em trong lòng anh.',
+				'🍬 [Lời hứa] Anh hứa sẽ luôn là người kiên nhẫn lắng nghe mọi câu chuyện nhảm nhí, vui buồn của em sau mỗi ngày làm việc.',
+				'🍭 [Chiều chuộng] Hôm nay em là nữ hoàng! Mọi mệnh lệnh em đưa ra đều sẽ được anh thi hành nhanh chóng và chính xác.',
+				'🍫 [Trái tim] Trái tim anh chỉ có một lối vào duy nhất, và em đã giữ chiếc chìa khóa đó ngay từ lần đầu tiên ta gặp nhau.',
+				'🍬 [Đồng hành] Đường đời có thể gập ghềnh gian nan, nhưng chỉ cần tay trong tay cùng em, anh không ngại đi đến tận cùng thế giới.',
+				'🍭 [Hài hước] Em có biết em rất giống một ly cà phê sữa không? Vừa làm anh tỉnh táo, vừa làm anh say đắm không dứt được!',
+				'🍫 [Ước nguyện] Mong em luôn tự tin vào bản thân mình, vì đối với anh, em luôn là cô gái giỏi giang và xuất sắc nhất.',
+				'🍬 [Bảo vệ] Đừng sợ cô đơn hay sợ hãi điều gì, bờ vai anh luôn ở đây để em tựa vào bất cứ khi nào cảm thấy yếu lòng.',
+				'🍭 [Lãng mạn] Những khoảnh khắc giản đơn bên em, cùng ăn một bữa cơm, cùng xem một bộ phim, mới là những điều xa xỉ nhất đời anh.',
+				'🍫 [Thử thách] Gửi cho anh một bức ảnh tự sướng đáng yêu nhất của em ngay lúc này để nhận ngay một ly trà sữa siêu to khổng lồ!',
+				'🍬 [Sự thật] Trí nhớ anh có thể kém với nhiều thứ, nhưng mọi chi tiết về em, từ món em thích ăn đến màu em ghét, anh đều nhớ như in.',
+				'🍭 [Lời hứa] Cuối tuần này anh sẽ đưa em đi lượn lờ khắp các ngõ ngách Sài Gòn, ăn sập các món ngon lề đường nhé!',
+				'🍫 [Chiều chuộng] Bất cứ khi nào em cảm thấy mỏi mệt vì deadline, hãy nháy mắt với anh, anh sẽ lập tức làm trạm sạc năng lượng cho em.',
+				'🍬 [Trái tim] Tình yêu anh dành cho em như một dòng điện xoay chiều, luôn đầy ắp năng lượng và không bao giờ tắt lịm.',
+				'🍭 [Hài hước] Anh đã đăng ký bản quyền độc quyền yêu thương em rồi nhé, không ai được phép tranh giành cô người yêu đáng yêu này đâu!',
+				'🍫 [Dỗ dành] Đừng suy nghĩ quá nhiều em nhé, mọi chuyện rồi sẽ ổn thôi vì luôn có anh ở bên cạnh cùng em đối mặt.',
+				'🍬 [Ước nguyện] Chúc cho cô gái của anh mỗi đêm đều có giấc ngủ thật ngon, không mộng mị, thức dậy với tinh thần sảng khoái nhất.',
+				'🍭 [Lãng mạn] Dù trời mưa hay nắng, chỉ cần được đi cùng em dưới một mái hiên, lòng anh đều ngập tràn ánh nắng ấm áp.',
+				'🍫 [Bí mật] Có những lúc nhìn em ngủ say, anh chỉ muốn thời gian ngừng trôi để được ngắm gương mặt bình yên ấy mãi mãi.',
+				'🍬 [Lời hứa] Anh hứa sẽ luôn học cách nhường nhịn em, vì anh biết giữ được nụ cười của em quan trọng hơn việc giành phần thắng.',
+				'🍭 [Sự thật] Em chính là người duy nhất có khả năng biến một ngày tồi tệ của anh trở nên rạng rỡ chỉ bằng một nụ cười.',
+				'🍫 [Thử thách] Hãy nở một nụ cười thật tươi ngay bây giờ đi nào! Nụ cười đó sẽ được ghi nhận vào máy chủ hạnh phúc của anh đó!',
+				'🍬 [Chiều chuộng] Cần mua sắm gì cứ alo anh nhé, ví tiền của anh luôn sẵn sàng phục vụ cho những sở thích đáng yêu của em.',
+				'🍭 [Đồng hành] Đi cùng nhau, chúng ta sẽ viết nên những chương đẹp nhất trong cuốn sách cuộc đời của hai đứa mình.',
+				'🍫 [Hài hước] Em có biết tại sao anh lại thích lập trình không? Vi anh muốn lập trình ra một tương lai chỉ có hai chúng mình thôi!',
+				'🍬 [Dỗ dành] Hãy khóc nếu em thấy buồn, anh sẽ luôn là người lau nước mắt và ôm em thật chặt vào lòng để an ủi.',
+				'🍭 [Ước nguyện] Mong cho sức khỏe của em luôn thật tốt, lúc nào cũng tràn đầy năng lượng tích cực và yêu đời.',
+				'🍫 [Lãng mạn] Cảm ơn em vì đã chịu đựng tính cách đôi lúc hơi trẻ con của anh và luôn bao dung yêu thương anh.',
+				'🍬 [Bảo vệ] Bất cứ khi nào em cần một cái ôm, hãy kích hoạt ngay đặc quyền của em, anh sẽ có mặt để ôm em thật lâu.',
+				'🍭 [Sự thật] Anh thích nhất là những buổi chiều lộng gió, được chở em sau xe, nghe em luyên thuyên đủ thứ chuyện trên đời.',
+				'🍫 [Lời hứa] Anh sẽ luôn cố gắng làm việc thật tốt để sớm xây dựng được một mái ấm nhỏ ấm áp, ngập tràn tiếng cười cùng em.',
+				'🍬 [Hài hước] IQ của anh có thể bình thường, nhưng chỉ số yêu thương em của anh thì chắc chắn đạt mức tối đa vô hạn!',
+				'🍭 [Bí mật] Em chính là nguồn cảm hứng lớn nhất giúp anh vượt qua mọi khó khăn và áp lực trong công việc mỗi ngày.',
+				'🍫 [Thử thách] Nhắn tin cho anh từ khóa "YÊU ANH" ngay bây giờ để nhận ngay 100 cái thơm má cực kỳ ngọt ngào!',
+				'🍬 [Chiều chuộng] Tối nay anh sẽ chuẩn bị một bữa tối thật ngon gồm những món em thích để hai đứa mình cùng thưởng thức nhé!',
+				'🍭 [Ước nguyện] Chúc cho Phương Anh của anh lúc nào cũng xinh đẹp, tự tin rạng rỡ và luôn hạnh phúc khi ở bên cạnh anh.',
+				'🍫 [Trái tim] Yêu em không chỉ là lời nói, yêu em là cả một hành trình dài mà anh nguyện đi cùng em suốt cuộc đời này.'
 			];
 
 			let visibleImagesCount = 12;
@@ -1706,10 +2144,459 @@
 
 			let isMusicPlaying = false;
 
+			const bgMusicSources = [
+				// Thêm bài hát gốc làm bài số 16
+				{ name: "Paul Yudin - Romantic Piano", url: "./music/paulyudin-romantic-romantic-music-493488.mp3" },
+				// Lofi & Acoustic tracks from highly stable, local, offline-ready sources
+				{ name: "Lofi Lãng Mạn - Rooftop Static Dreams", url: "./music/rooftop-static-dreams.mp3" },
+				{ name: "Lofi Êm Đềm - Midnight Window Glow", url: "./music/midnight-window-glow.mp3" },
+				{ name: "Lofi Thư Thái - Midnight On My Mind", url: "./music/midnight-on-my-mind.mp3" },
+				{ name: "Lofi Ấm Áp - Candlelit at 70 BPM", url: "./music/candlelit-at-70-bpm.mp3" },
+				{ name: "Lofi Ngọt Ngào - Midnight Amber Room", url: "./music/midnight-amber-room.mp3" },
+				{ name: "Lofi Bình Yên - Stacks of Quiet Books", url: "./music/stacks-of-quiet-books.mp3" },
+				{ name: "Lofi Nhẹ Nhàng - Rain on the Boulevard", url: "./music/rain-on-the-boulevard.mp3" },
+				{ name: "Lofi Mơ Mộng - Harbor Before Words", url: "./music/harbor-before-words.mp3" },
+				{ name: "Lofi Thanh Mát - Linen and Limoncello", url: "./music/linen-and-limoncello.mp3" },
+				{ name: "Lofi Hoài Niệm - Rain off the Neon Signs", url: "./music/rain-off-the-neon-signs.mp3" },
+				{ name: "Lofi Mộc Mạc - Last Train Home", url: "./music/last-train-home.mp3" },
+				{ name: "Lofi Lấp Lánh - Electric Puddles", url: "./music/electric-puddles.mp3" },
+				{ name: "Lofi Mơ Màng - Blinds and Headlights", url: "./music/blinds-and-headlights.mp3" },
+				{ name: "Lofi Tình Ca - Antenna After Midnight", url: "./music/antenna-after-midnight.mp3" }
+			];
+
+			const romanticLetters = [
+				{
+					heading: `"Bên anh, em luôn được là chính mình"`,
+					paragraphs: [
+						`Gửi em - cô gái luôn kiên cường, tự lập và tràn đầy trách nhiệm mỗi ngày. Cuộc sống bận rộn đôi khi bắt em phải khoác lên mình lớp áo mạnh mẽ, đối mặt với deadline, với những mối lo và áp lực không tên.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Nhưng em ơi, dù em có 'cân' cả thế giới ngoài kia giỏi đến thế nào, thì khi ở bên anh, em cứ việc bật chế độ lười biếng, thỉnh thoảng hờn dỗi một chút cũng chẳng sao. Anh hứa sẽ luôn đứng về phía em (ngay cả những lúc em vô lý nhất!)."</p>`,
+						`Mỗi khi bước vào khu vườn này, em không cần phải cố gắng làm một cô gái chín chắn hay đảm đang của bất kỳ ai. Hãy cứ thoải mái làm nũng, ăn những món em thích, luyên thuyên những chuyện nhỏ nhặt trên trời dưới đất và mỉm cười thật rạng rỡ. Mọi lo toan ngoài kia, cứ để anh gánh vác hộ một tay.`,
+						`Cảm ơn em vì đã chịu đựng một người yêu đôi lúc hơi ngốc nghếch như anh, và cảm ơn em vì luôn mang lại sự ấm áp ngọt ngào cho cuộc đời anh. Mong rằng mỗi ngày bên anh, em đều tìm thấy niềm vui, sự bình yên và thật nhiều tiếng cười.`
+					]
+				},
+				{
+					heading: `"Cảm ơn em vì đã ghé thăm... kẻ si tình này!"`,
+					paragraphs: [
+						`Này Phương Anh, anh biết cuộc sống hối hả ngoài kia đôi lúc làm em mệt mỏi với đống công việc chồng chất và những suy nghĩ không tên. Nhưng hôm nay, hãy tạm cất chúng đi và bước vào thế giới chỉ có hai chúng ta nhé.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Người ta nói tình yêu là một canh bạc, nhưng anh cá là mình đã trúng độc đắc khi có em. Dù thỉnh thoảng em hơi bướng, hay giận dỗi không lý do và thỉnh thoảng thích 'bắt nạt' anh, thì với anh, em vẫn là điều tuyệt vời nhất mà anh có được."</p>`,
+						`Ở khu vườn ký ức này, anh không cần một cô gái hoàn hảo, chỉ cần một Phương Anh vui vẻ, có thể tự do cười đùa, ăn sập thế gian cùng anh và luyên thuyên đủ thứ chuyện trên đời mà không cần giữ kẽ.`,
+						`Anh hứa sẽ luôn là người kiên nhẫn nghe em cằn nhằn, sẵn sàng nấu món em thích (dù có thể không ngon bằng ngoài tiệm) và ôm em thật chặt bất cứ khi nào em cần. Cảm ơn em vì đã luôn là mảnh ghép ngọt ngào nhất của anh!`
+					]
+				},
+				{
+					heading: `"Nơi em có thể trút bỏ cả thế giới để tựa vào vai anh"`,
+					paragraphs: [
+						`Phương Anh thân yêu, anh biết em là một cô gái vô cùng độc lập, luôn tự mình gánh vác mọi việc và cố gắng hoàn thành tốt mọi thứ. Nhưng em không cần phải lúc nào cũng gồng mình tỏ ra mạnh mẽ như vậy đâu.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Mỗi khi thấy áp lực, hãy nhớ rằng bờ vai này luôn sẵn sàng cho em tựa, và anh luôn ở đây để nghe em kể tội cả thế giới ngoài kia. Dù em có vô lý, có dỗi hờn, anh vẫn tình nguyện nhận hết phần sai về mình (vì cãi nhau với em chưa bao giờ là ý hay cả!)."</p>`,
+						`Hy vọng khu vườn ký ức nhỏ này sẽ mang lại cho em một chút yên bình sau những giờ làm việc căng thẳng. Hãy cứ thoải mái thư giãn, nghe nhạc và nhớ rằng anh luôn yêu em nhiều hơn mỗi ngày.`,
+						`Cảm ơn em vì đã chọn đi cùng anh trên con đường này. Chúc cô gái của anh luôn có những ngày ngập tràn niềm vui, và nếu có ngày nào mệt mỏi, hãy kích hoạt ngay một chiếc thẻ đặc quyền để anh đến nuông chiều em nhé!`
+					]
+				},
+				{
+					heading: `"Hướng dẫn sử dụng 'Kẻ Si Tình' dành riêng cho Phương Anh"`,
+					paragraphs: [
+						`Chào em - cô gái có quyền truy cập cao nhất vào trái tim anh. Giao diện cuộc sống đôi khi có nhiều lỗi (bug) khiến em căng thẳng và mệt mỏi, nhưng đừng lo, máy chủ tình yêu của anh luôn hoạt động 24/7 để phục vụ em.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Quy định duy nhất trong khu vườn này: Em luôn luôn đúng. Nếu em sai, vui lòng xem lại quy định trên. Dù ngoài kia em có phải đối mặt với hàng tá rắc rối, thì khi về bên anh, em chỉ việc tận hưởng sự nuông chiều và yêu thương tuyệt đối."</p>`,
+						`Cảm ơn em vì luôn đồng ý làm 'bạn đời' và đồng hành cùng một lập trình viên đôi khi hơi khô khan nhưng luôn yêu em bằng cả trái tim này. Hãy để anh chăm sóc em, đưa em đi ăn những món em thích và ôm em thật chặt mỗi ngày nhé.`,
+						`Chúc Phương Anh có một trải nghiệm thật ngọt ngào trong thế giới ký ức của hai đứa. Hãy nhớ rằng anh luôn ở đây, sẵn sàng nâng cấp tình cảm này lên phiên bản tốt hơn mỗi ngày vì em!`
+					]
+				},
+				{
+					heading: `"Phương án tối ưu hóa hiệu năng mang tên Phương Anh"`,
+					paragraphs: [
+						`Chào cô gái của anh, thỉnh thoảng anh hay ngồi so sánh code với cuộc sống, và anh nhận ra em là thuật toán tối ưu nhất mà anh từng biết. Giao diện của em luôn rạng rỡ, làm sáng bừng cả những ngày xám xịt nhất của anh.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Hiệu năng của anh có thể giảm sút sau 8 tiếng làm việc căng thẳng, nhưng chỉ cần nhận được một tin nhắn ngắn ngủi từ em, máy chủ trong anh lập tức hồi phục 100% dung lượng. Đúng là không có loại card đồ họa nào xử lý được vẻ đẹp và sự đáng yêu của em cả!"</p>`,
+						`Đôi khi anh nghĩ, nếu có thể lập trình ra một thế giới hoàn mỹ, anh vẫn sẽ giữ lại một vài 'bug' nhỏ đáng yêu từ em, như lúc em phụng phịu khi anh lỡ quên rep tin nhắn hay lúc em đòi ăn cả thế giới nhưng lại sợ tăng cân.`,
+						`Cảm ơn em vì đã luôn là nguồn năng lượng tích cực nhất của anh. Hãy nhớ rằng, dù thế giới ngoài kia có 'lag' đến thế nào, thì tình yêu anh dành cho em vẫn là một luồng chạy vô hạn, không bao giờ gặp lỗi 'time out'.`
+					]
+				},
+				{
+					heading: `"Hẹn hò thời tiết: Cơn mưa rào ấm áp ở TP.HCM"`,
+					paragraphs: [
+						`Phương Anh ơi, em có thích những buổi chiều mưa tấp vào một góc quán nhỏ, ngắm dòng người hối hả qua lại và chia nhau một chiếc bánh ngọt không? Với anh, đó là định nghĩa của sự bình yên tuyệt đối.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Mưa Sài Gòn có thể đến và đi bất chợt làm người ta ướt sũng, nhưng tình cảm anh dành cho em thì như những cơn mưa dầm thấm lâu, ngày qua ngày lại càng sâu đậm hơn. Anh nguyện làm chiếc ô che chở em suốt những mùa giông bão."</p>`,
+						`Cảm ơn em đã cùng anh đi qua những ngày nắng gắt lẫn những buổi chiều mưa gió. Dù thời tiết ngoài kia có thay đổi thế nào, chỉ cần trong lòng chúng mình có nhau, ngày nào cũng là ngày đẹp trời.`,
+						`Hãy cứ tựa vào vai anh mỗi khi trời lạnh nhé, hơi ấm của anh tuy nhỏ nhưng hứa hẹn sẽ sưởi ấm cho em suốt cả mùa đông dài!`
+					]
+				},
+				{
+					heading: `"Khi em dỗi - Thuật toán giải quyết khủng hoảng của anh"`,
+					paragraphs: [
+						`Gửi em, cô gái mà mỗi lần giận dỗi là một lần làm tim anh đập loạn nhịp (theo cả nghĩa đơn lẫn nghĩa bóng!). Anh đã tự thiết lập một quy trình xử lý khủng hoảng cực kỳ nghiêm ngặt dành riêng cho em.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Bước 1: Luôn luôn nhận sai vô điều kiện. Bước 2: Mua ngay ly trà sữa 70% đường, 30% đá kèm trân châu hoàng kim. Bước 3: Ôm em thật chặt và thì thầm vào tai em rằng: Em dỗi trông vẫn cực kỳ đáng yêu!"</p>`,
+						`Anh biết thỉnh thoảng anh hơi ngốc, không hiểu hết những suy nghĩ nhạy cảm của em. Nhưng em hãy tin rằng, anh luôn cố gắng học hỏi và hoàn thiện bản thân mỗi ngày để trở thành một điểm tựa vững chãi nhất.`,
+						`Đừng giận anh lâu quá nhé, vì thiếu đi tiếng cười của em, thế giới của anh bỗng trở nên vô vị và tẻ nhạt vô cùng.`
+					]
+				},
+				{
+					heading: `"Thư gửi tương lai: Ngôi nhà nhỏ ngập trạng ánh nắng"`,
+					paragraphs: [
+						`Phương Anh yêu dấu, đã bao giờ em nhắm mắt lại và tưởng tượng về tương lai của hai đứa mình chưa? Một ngôi nhà nhỏ ngập tràn ánh nắng, có ban công trồng đầy hoa và một chú mèo lười nằm sưởi nắng.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Ở đó, mỗi sáng thức dậy anh sẽ chuẩn bị một ly cà phê ấm, ngắm nhìn em vẫn còn ngái ngủ bước ra. Chúng ta sẽ cùng nhau chuẩn bị bữa tối, kể cho nhau nghe những câu chuyện vụn vặt và cùng xem một bộ phim lãng mạn trước khi đi ngủ."</p>`,
+						`Đó không phải là một giấc mơ xa vời, mà là mục tiêu anh đang nỗ lực từng ngày để hiện thực hóa cùng em. Mọi cố gắng của anh hiện tại đều có một phần bóng dáng của tương lai ngọt ngào ấy.`,
+						`Cảm ơn em vì đã là động lực lớn nhất để anh phấn đấu. Chúng mình cùng nhau vun đắp và đi đến tận cùng hạnh phúc nhé em!`
+					]
+				},
+				{
+					heading: `"Bí mật nhỏ: Anh đã thích em từ lúc nào?"`,
+					paragraphs: [
+						`Này em, anh có một bí mật nhỏ muốn bật mí cho em nghe. Em có biết anh đã thực sự 'lọt hố' em từ khoảnh khắc nào không? Đó không phải là một dịp trọng đại nào cả, mà chỉ là một khoảnh khắc rất đỗi bình thường.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Đó là lúc nhìn thấy nụ cười tự nhiên, rạng rỡ của em khi kể về một món ăn ngon, hay ánh mắt lấp lánh đầy nhiệt huyết của em khi nói về những dự định tương lai. Khoảnh khắc ấy, anh biết cuộc đời mình đã tìm thấy mảnh ghép còn thiếu."</p>`,
+						`Trái tim anh vốn dĩ rất bướng bỉnh và lý trí, nhưng trước sự dịu dàng và năng lượng tích cực của em, nó đã hoàn toàn đầu hàng không điều kiện.`,
+						`Cảm ơn định mệnh đã đưa em đến bên anh, biến những ngày bình thường của anh trở thành những ngày hội ngập tràn hạnh phúc.`
+					]
+				},
+				{
+					heading: `"Tại sao em luôn là phiên bản đặc biệt nhất?"`,
+					paragraphs: [
+						`Gửi Phương Anh, thế giới này có hơn 8 tỷ người, mỗi người là một bản thể riêng biệt. Nhưng đối với anh, em là một phiên bản đặc biệt nhất, không có bất kỳ bản sao hay đối thủ cạnh tranh nào cả.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Em không cần phải hoàn hảo theo tiêu chuẩn của ai, vì sự chân thành, thông minh và cả những nét 'vô lý cực kỳ đáng yêu' của em đã là định nghĩa hoàn hảo nhất trong lòng anh rồi."</p>`,
+						`Anh thích cách em chăm sóc người khác, cách em tập trung làm việc, và thích cả những lúc em làm nũng bắt anh phải chiều theo ý em. Tất cả những điều đó tạo nên một Phương Anh độc nhất vô nhị của anh.`,
+						`Hãy luôn tự tin là chính mình em nhé, vì đối với anh, em luôn là ngôi sao rạng rỡ và lấp lánh nhất!`
+					]
+				},
+				{
+					heading: `"Em có biết nụ cười của em là 'bug' lớn nhất của cuộc đời anh?"`,
+					paragraphs: [
+						`Chào em, là lập trình viên Châu đây. Trong công việc, anh cực kỳ ghét bug và luôn cố gắng dọn dẹp sạch sẽ chúng. Nhưng có một loại bug đặc biệt mà anh tình nguyện giữ lại suốt đời mà không bao giờ muốn sửa.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Đó chính là nụ cười của em. Mỗi khi em cười, mọi logic, thuật toán hay sự phòng thủ trong tâm trí anh đều bị 'treo' hoàn toàn, nhường chỗ cho sự ngọt ngào lấn át toàn bộ hệ thống."</p>`,
+						`Anh nhận ra rằng, trước tình yêu của em, mọi nguyên tắc khô khan của anh đều có thể được linh hoạt thay đổi. Em chính là dòng mã đặc biệt viết đè lên mọi quy tắc cũ kỹ trong cuộc đời anh.`,
+						`Nguyện để chiếc 'bug' đáng yêu này đồng hành cùng anh suốt chặng đường dài phía trước, biến cuộc sống của chúng ta thành một chương trình ngập tràn hạnh phúc.`
+					]
+				},
+				{
+					heading: `"Cảm ơn em vì những điều nhỏ nhặt nhất"`,
+					paragraphs: [
+						`Phương Anh thương mến, đôi khi guồng quay hối hả của cuộc sống khiến chúng ta quên đi những lời cảm ơn dành cho nhau. Hôm nay, anh muốn viết bức thư này để bày tỏ sự trân trọng sâu sắc đến em.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Cảm ơn em vì chiếc nắm tay siết nhẹ mỗi khi đi qua ngã tư đông đúc, cảm ơn câu hỏi 'Anh ăn cơm chưa?' dịu dàng sau mỗi ngày dài mệt mỏi, và cảm ơn cả những cái ôm ấm áp xoa dịu đi mọi áp lực công việc."</p>`,
+						`Chính những điều giản dị, nhỏ nhặt ấy đã dệt nên một tình yêu bền vững và sâu sắc giữa hai chúng mình. Tình yêu không cần phải là những lời thề non hẹn biển, mà là sự đồng hành bền bỉ qua từng ngày thường nhật.`,
+						`Cảm ơn em vì đã luôn ở bên anh, chia sẻ mọi vui buồn và cùng anh xây dựng những viên gạch hạnh phúc đầu tiên.`
+					]
+				},
+				{
+					heading: `"Những ngày không có em - Nỗi nhớ lập trình tuyến tính"`,
+					paragraphs: [
+						`Gửi em yêu, những ngày xa nhau hoặc những lúc em bận rộn không thể gặp mặt, khoảng cách địa lý dường như làm nỗi nhớ trong anh tăng lên theo cấp số nhân mỗi ngày.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Anh cứ lặp đi lặp lại việc kiểm tra điện thoại chỉ để xem có tin nhắn mới từ em không. Màn hình máy tính đầy dòng code nhưng trong đầu anh chỉ hiện lên hình bóng nụ cười rạng rỡ của cô người yêu đáng yêu."</p>`,
+						`Sự thiếu vắng em làm nhịp sống của anh bỗng chậm lại một nhịp. Anh nhận ra mình đã quá quen với việc có em bên cạnh, chia sẻ từng món ăn ngon, từng câu chuyện vui buồn mỗi ngày.`,
+						`Hãy sớm gặp nhau để anh được bù đắp và ôm em thật chặt cho thỏa nỗi nhớ mong nhé!`
+					]
+				},
+				{
+					heading: `"Phương Anh và cốc trà sữa 70% đường, 100% là em"`,
+					paragraphs: [
+						`Này em, anh chợt nhận ra tình yêu của chúng mình rất giống cách em gọi trà sữa vậy. Không quá ngọt gắt đến mức ngấy, nhưng cũng đủ ngọt ngào để làm người ta say đắm.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Em là cốc trà sữa đặc biệt nhất đời anh: 70% ngọt ngào từ những cử chỉ quan tâm, 30% hóm hỉnh dí dỏm từ những câu đùa, và 100% là sự chân thành ấm áp mà chỉ riêng em mới có."</p>`,
+						`Dù đôi lúc em có thêm chút 'thạch dỗi hờn' hay 'trân châu bướng bỉnh', anh vẫn vui vẻ thưởng thức trọn vẹn và không bao giờ thấy chán.`,
+						`Cứ yên tâm là anh sẽ luôn sẵn sàng làm shipper giao trà sữa miễn phí trọn đời cho riêng em nhé!`
+					]
+				},
+				{
+					heading: `"Bản giao hưởng lãng mạn giữa lòng thành phố náo nhiệt"`,
+					paragraphs: [
+						`Gửi Phương Anh, giữa lòng thành phố náo nhiệt và đầy khói bụi này, tìm được một người để cùng tĩnh lặng ngắm hoàng hôn, cùng lắng nghe một bản nhạc lofi nhẹ nhàng thực sự là một điều kỳ diệu.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Anh yêu những buổi chiều hai đứa mình chở nhau lang thang qua những con phố quen thuộc, không cần nói quá nhiều, chỉ cần tay trong tay khẽ siết chặt, lắng nghe nhịp thở của thành phố và của đối phương."</p>`,
+						`Em mang lại cho anh cảm giác bình yên như một nốt trầm dịu êm giữa bản nhạc cuộc sống dồn dập. Bên em, anh được trút bỏ mọi áp lực để trở về là một người yêu giản dị nhất.`,
+						`Mong rằng chúng ta sẽ luôn giữ được sự bình dị và ngọt ngào này đi qua mọi năm tháng thăng trầm của cuộc đời.`
+					]
+				},
+				{
+					heading: `"Bờ vai này luôn có thời hạn bảo hành trọn đời"`,
+					paragraphs: [
+						`Chào cô gái chăm chỉ của anh. Cuộc sống ngoài kia đôi lúc có quá nhiều áp lực, công việc dồn dập khiến em mệt mỏi và muốn gục ngã. Những lúc như thế, hãy nhớ về một 'trạm sạc' luôn mở cửa miễn phí vì em.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Bờ vai anh luôn có thời hạn bảo hành trọn đời, không bao giờ hết hạn và sẵn sàng chịu lực 24/7. Bất cứ khi nào em thấy mỏi mệt, hãy cứ tựa vào và để anh gánh vác bớt những lo toan cho em."</p>`,
+						`Em đã rất mạnh mẽ và cố gắng rồi, giờ là lúc để bản thân được nghỉ ngơi một chút. Hãy để anh chăm sóc em, chuẩn bị đồ ăn ngon và vỗ về em nhé.`,
+						`Dù có chuyện gì xảy ra, anh vẫn luôn đứng phía sau, làm hậu phương vững chắc nhất hỗ trợ em trên mọi nẻo đường.`
+					]
+				},
+				{
+					heading: `"Những điều ngọt ngào từ sự vô lý cực kỳ đáng yêu của em"`,
+					paragraphs: [
+						`Phương Anh thân mến, có một sự thật là anh cực kỳ thích ngắm nhìn những lúc em tranh luận 'vô lý' với anh. Bởi vì lúc đó, gương mặt em biểu cảm cực kỳ phong phú và đáng yêu vô cùng.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Em có thể bắt anh nhận lỗi dù anh chẳng biết mình sai ở đâu, hoặc bắt anh thừa nhận em gầy đi dù hai đứa vừa càn quét sạch sẽ cả bàn đồ ăn. Nhưng đối với anh, sự 'vô lý' đó chính là đặc quyền ngọt ngào mà anh tình nguyện dung túng cả đời."</p>`,
+						`Tình yêu của chúng mình không cần những logic toán học khô khan, mà cần sự nhường nhịn và thấu hiểu lẫn nhau. Và anh luôn hạnh phúc khi được làm người nhường bước trước em.`,
+						`Hãy cứ tiếp tục là cô người yêu tinh nghịch, thỉnh thoảng bắt nạt anh nhé, vì đó chính là gia vị tuyệt vời giúp tình yêu hai đứa luôn tươi mới!`
+					]
+				},
+				{
+					heading: `"Bức thư gửi cô gái đang làm việc chăm chỉ lúc nửa đêm"`,
+					paragraphs: [
+						`Gửi Phương Anh - cô gái siêu cấp chăm chỉ của anh. Giờ này chắc em vẫn đang cặm cụi bên bàn làm việc, hoàn thành nốt những deadline dở dang đúng không? Anh nhìn mà vừa thương lại vừa xót xa.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Dù công việc có quan trọng thế nào, em cũng nhớ phải giữ gìn sức khỏe nhé. Đừng quên uống nước lọc, thỉnh thoảng đứng dậy vươn vai và nhớ đi ngủ sớm. Sức khỏe của em là tài sản quý giá nhất của anh đó!"</p>`,
+						`Ước gì lúc này anh có thể ở bên cạnh, pha cho em một ly sữa nóng hoặc xoa bóp đôi vai đang mỏi nhừ của em. Hãy cố lên em nhé, anh luôn hướng về em và cầu chúc em hoàn thành công việc thật tốt.`,
+						`Hoàn thành xong hãy ngủ một giấc thật ngon và mơ về anh nhé, cô gái tuyệt vời của anh!`
+					]
+				},
+				{
+					heading: `"Chuyến du lịch trong mơ của đôi mình"`,
+					paragraphs: [
+						`Phương Anh yêu dấu, chúng mình đã cùng nhau lên kế hoạch cho bao nhiêu chuyến đi rồi nhỉ? Từ những vùng biển ngập tràn nắng gió đến những đồi thông mờ sương lạnh giá. Anh luôn mong chờ ngày hai đứa mình xách balo lên và đi.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Hành trình tuyệt vời nhất không nằm ở điểm đến, mà là ở người đồng hành. Chỉ cần có em kề bên, cùng anh ngắm nhìn những chân trời mới, chia sẻ những món ăn lạ lẫm, thì bất kể nơi đâu cũng đều hóa thiên đường."</p>`,
+						`Chúng mình cùng cố gắng làm việc thật tốt để sớm hiện thực hóa những chuyến đi này nhé. Anh sẽ chuẩn bị máy ảnh thật xịn để ghi lại những khoảnh khắc rực rỡ nhất của em.`,
+						`Cảm ơn em đã luôn là người bạn đời, người đồng hành tuyệt vời trên mọi chặng đường cuộc sống của anh.`
+					]
+				},
+				{
+					heading: `"Mật mã tình yêu: Khóa chính (Primary Key) duy nhất"`,
+					paragraphs: [
+						`Gửi Phương Anh, trong cơ sở dữ liệu của cuộc đời anh, có rất nhiều bảng thông tin và dữ liệu phức tạp. Nhưng có một bảng đặc biệt mang tên 'Hạnh Phúc' chỉ chấp nhận một khóa chính (Primary Key) duy nhất.`,
+						`<p class="border-l-2 border-amber-400/40 pl-4 py-1 italic text-amber-100/90 bg-amber-500/[0.02]">"Khóa chính đó không ai khác ngoài Phương Anh (I'mPA). Mọi dữ liệu tình cảm, sự quan tâm và yêu chiều của anh đều được liên kết chặt chẽ với khóa chính này và không thể bị thay thế bởi bất kỳ bản ghi nào khác."</p>`,
+						`Hệ thống trái tim anh đã được mã hóa bằng tình yêu của em, bảo mật tuyệt đối trước mọi tác động bên ngoài. Em chính là người sở hữu quyền quản trị cao nhất và duy nhất.`,
+						`Hãy cùng anh duy trì và vận hành hệ thống ngập tràn hạnh phúc này thật bền vững suốt cuộc đời em nhé!`
+					]
+				}
+			];
+
+			// Romantic Slogans Database (50 items matching header & footer)
+			const romanticSlogans = [
+				{
+					header: `Nơi Dung Túng 99% Ngọt Ngào & <span class="text-amber-200 glow-gold italic">1% Vô Lý Của</span> Em`,
+					footer: `"Chúc em luôn có những đêm ngon giấc, những ngày thảnh thơi, và luôn biết rằng phía sau em luôn có anh đồng hành."`
+				},
+				{
+					header: `Hệ Thống Phục Vụ 99% Chiều Chuộng & <span class="text-amber-200 glow-gold italic">1% Bướng Bỉnh Của</span> Phương Anh`,
+					footer: `"Dù cả thế giới có chạy bằng thuật toán phức tạp thế nào, thì tình yêu của anh dành cho em vẫn là hằng số bất biến."`
+				},
+				{
+					header: `Máy Chủ Tình Yêu Chạy <span class="text-amber-200 glow-gold italic">100% Công Suất</span> Vì Em`,
+					footer: `"Mong cô gái của anh ngủ thật ngon, để ngày mai thức dậy tiếp tục có sức bắt nạt anh nhé!"`
+				},
+				{
+					header: `Nơi Lưu Trữ 1001 <span class="text-amber-200 glow-gold italic">Khoảnh Khắc Đáng Yêu</span> Của Phương Anh`,
+					footer: `"Trà sữa có thể hết hạn, nhưng tình yêu và sự kiên nhẫn anh dành cho em thì được bảo hành trọn đời."`
+				},
+				{
+					header: `Khu Vườn Nuông Chiều Cô Gái <span class="text-amber-200 glow-gold italic">Thích Ăn Cả Thế Giới</span> Của Anh`,
+					footer: `"Chúc em ngủ ngon không bận lòng cân nặng, vì dù em tròn hay méo thì trong mắt anh vẫn là xinh nhất!"`
+				},
+				{
+					header: `Vùng Trời Bình Yên Tránh <span class="text-amber-200 glow-gold italic">Mọi Giông Bão & Deadline</span> Ngoài Kia`,
+					footer: `"Ngủ ngon đi em, thế giới ngoài kia đã có anh lo, việc của em chỉ là luôn giữ nụ cười trên môi."`
+				},
+				{
+					header: `Văn Phòng Giải Quyết <span class="text-amber-200 glow-gold italic">Mọi Sự Dỗi Hờn Dễ Thương</span> Của Em`,
+					footer: `"Dù có bất đồng gì xảy ra, anh xin nhận sai trước 50 năm để chúng mình luôn vui vẻ bên nhau!"`
+				},
+				{
+					header: `Trạm Sạc Yêu Thương <span class="text-amber-200 glow-gold italic">24/7 Dành Riêng</span> Cho Phương Anh`,
+					footer: `"Đêm đã khuya rồi, cất deadline đi và ngủ ngon em nhé. Sức khỏe của em là tài sản lớn nhất của anh."`
+				},
+				{
+					header: `Bảo Tàng Dung Túng Sự <span class="text-amber-200 glow-gold italic">Đáng Yêu Không Giới Hạn</span> Của Em`,
+					footer: `"Thật hạnh phúc vì được làm người đồng hành cùng em, chia sẻ từng cốc trà sữa và từng tiếng cười mỗi ngày."`
+				},
+				{
+					header: `Thuật Toán Tối Ưu Hóa <span class="text-amber-200 glow-gold italic">Tất Cả Sự Nuông Chiều</span> Cho Em`,
+					footer: `"Trái tim anh đã được định cấu hình chỉ để chứa một thực thể duy nhất mang tên Phương Anh."`
+				},
+				{
+					header: `Nơi Chấp Nhận Mọi <span class="text-amber-200 glow-gold italic">Yêu Sách Vô Lý Nhưng Đáng Yêu</span> Của Em`,
+					footer: `"Chúc em ngủ thật ngon, có những giấc mơ thật đẹp và trong những giấc mơ đó luôn xuất hiện anh nhé!"`
+				},
+				{
+					header: `Cơ Sở Dữ Liệu Chứa <span class="text-amber-200 glow-gold italic">100% Sự Ngọt Ngào</span> Của Chúng Ta`,
+					footer: `"Tình yêu của anh không cần logic, chỉ cần có em kề bên là mọi thuật toán đều tự động chạy trơn tru."`
+				},
+				{
+					header: `Khu Vườn Nuôi Dưỡng <span class="text-amber-200 glow-gold italic">Sự Dịu Dàng & Tinh Nghịch</span> Của Em`,
+					footer: `"Chúc em luôn có những ngày thảnh thơi, những đêm ngon giấc, và luôn nhớ rằng anh yêu em nhiều hơn mỗi ngày."`
+				},
+				{
+					header: `Trang Web Chống Lag <span class="text-amber-200 glow-gold italic">Tâm Trạng Cho Cô Người Yêu</span> Của Anh`,
+					footer: `"Hệ thống ghi nhận nỗi nhớ em đang chạy ngầm với hiệu năng 200%. Chúc em ngủ ngon nhé!"`
+				},
+				{
+					header: `Nơi Tiêu Thụ 99% <span class="text-amber-200 glow-gold italic">Sự Đáng Yêu & 1% Hay Dỗi</span> Của Em`,
+					footer: `"Đừng lo lắng về ngày mai, vì ngày nào có anh đồng hành cũng đều là một ngày ngập tràn nắng ấm."`
+				},
+				{
+					header: `Hệ Điều Hành Tình Yêu <span class="text-amber-200 glow-gold italic">Dành Riêng Cho Phương Anh</span>`,
+					footer: `"Chúc em có một giấc ngủ êm ái như chiếc đệm bông và thức dậy với nụ cười rạng rỡ như ánh mai."`
+				},
+				{
+					header: `Không Gian Dung Túng <span class="text-amber-200 glow-gold italic">Sự Lười Biếng Ngọt Ngào</span> Của Em`,
+					footer: `"Ở bên anh, em cứ việc thoải mái làm nũng, thỉnh thoảng lười một chút cũng chẳng sao đâu em."`
+				},
+				{
+					header: `Hộp Ký Ức Chứa <span class="text-amber-200 glow-gold italic">Ngàn Điều Nuông Chiều</span> Dành Cho Em`,
+					footer: `"Cảm ơn em vì đã đến và biến cuộc sống khô khan của anh thành một cuốn phim lãng mạn ngọt ngào."`
+				},
+				{
+					header: `Trạm Vũ Trụ Phát <span class="text-amber-200 glow-gold italic">Tần Số Yêu Thương Đến</span> Phương Anh`,
+					footer: `"Dù khoảng cách có xa xôi, thì tần số trái tim anh vẫn luôn hướng về em mọi lúc, mọi nơi."`
+				},
+				{
+					header: `Căn Cứ Bí Mật <span class="text-amber-200 glow-gold italic">Bảo Vệ Nụ Cười Rạng Rỡ</span> Của Em`,
+					footer: `"Chúc cô gái chăm chỉ ngủ ngon giấc, ngày mai thức dậy sẽ đón nhận thật nhiều may mắn và niềm vui!"`
+				},
+				{
+					header: `Nơi Cung Cấp Trà Sữa <span class="text-amber-200 glow-gold italic">70% Đường & 100% Chiều</span> Em`,
+					footer: `"Trà sữa của em có thể ngọt, nhưng chắc chắn không thể ngọt ngào bằng tình yêu anh dành cho em."`
+				},
+				{
+					header: `Bảng Điều Khiển Của <span class="text-amber-200 glow-gold italic">Trái Tim Si Tình Mang Tên</span> Châu`,
+					footer: `"Quyền quản trị cao nhất đối với trái tim anh đã được bàn giao trọn đời cho Phương Anh."`
+				},
+				{
+					header: `Khu Vườn Trốn Deadline <span class="text-amber-200 glow-gold italic">Cực Kỳ Yên Bình</span> Của Hai Đứa`,
+					footer: `"Cất hết công việc đi em ơi, tối nay hãy để đầu óc thư giãn và chìm vào giấc ngủ thật sâu nhé."`
+				},
+				{
+					header: `Bảo Tàng Dung Túng <span class="text-amber-200 glow-gold italic">Sự Đanh Đá Cực Đáng Yêu</span> Của Em`,
+					footer: `"Dù thỉnh thoảng em hơi bướng, thì với anh, em vẫn là cô người yêu đáng yêu nhất trần đời."`
+				},
+				{
+					header: `Hệ Thống Tự Động <span class="text-amber-200 glow-gold italic">Xóa Tan Mọi Nỗi Buồn</span> Của Phương Anh`,
+					footer: `"Chúc em luôn bình yên bên anh, mọi lo toan ngoài kia hãy cứ để anh gánh vác hộ một tay."`
+				},
+				{
+					header: `Trạm Tiếp Sức Cho <span class="text-amber-200 glow-gold italic">Cô Nàng Làm Việc Chăm Chỉ</span>`,
+					footer: `"Làm việc mệt rồi thì nhớ nghỉ ngơi em nhé, bờ vai anh luôn sẵn sàng cho em tựa vào bất cứ lúc nào."`
+				},
+				{
+					header: `Nơi Dung Túng Sự <span class="text-amber-200 glow-gold italic">Vô Lý Có Tổ Chức</span> Của Em`,
+					footer: `"Trong tình yêu của hai đứa, em luôn là người nắm giữ mọi phán quyết tối cao và đúng đắn nhất!"`
+				},
+				{
+					header: `Thiên Đường Tránh Nóng & <span class="text-amber-200 glow-gold italic">Tránh Mỏi Mệt Dành Cho</span> Em`,
+					footer: `"Chúc em luôn có những buổi chiều thảnh thơi đi dạo cùng anh và những đêm ngủ thật ngon giấc."`
+				},
+				{
+					header: `Thuật Toán Auto <span class="text-amber-200 glow-gold italic">Dỗ Dành Khi Phương Anh Dỗi</span>`,
+					footer: `"Ly trà sữa ngọt ngào và cái ôm ấm áp đang trên đường vận chuyển đến để dỗ dành em đây!"`
+				},
+				{
+					header: `Nơi Lưu Trữ 99% <span class="text-amber-200 glow-gold italic">Nụ Cười & 1% Phụng Phịu</span> Của Em`,
+					footer: `"Mong cho đôi mắt em luôn lấp lánh niềm vui, và mỗi ngày bên anh đều là một ngày bình yên vô giá."`
+				},
+				{
+					header: `Hộp Thư Chứa <span class="text-amber-200 glow-gold italic">Đầy Ắp Sự Yêu Chiều Vô Điều Kiện</span>`,
+					footer: `"Ngủ ngon nhé cô gái của anh, ngày mai thức dậy lại tiếp tục làm ngôi sao rạng rỡ nhất lòng anh."`
+				},
+				{
+					header: `Căn Hầm Tránh deadline <span class="text-amber-200 glow-gold italic">Vô Cùng Ấm Áp</span> Của Em`,
+					footer: `"Dù công việc có bận rộn, em cũng đừng quên chăm sóc bản thân và đi ngủ sớm nhé em."`
+				},
+				{
+					header: `Trang Web Thiết Kế <span class="text-amber-200 glow-gold italic">Độc Quyền Để Chiều Chuộng</span> Phương Anh`,
+					footer: `"Cảm ơn em vì đã luôn là mảnh ghép hoàn hảo nhất, mang lại sự ấm áp ngọt ngào cho cuộc đời anh."`
+				},
+				{
+					header: `Nơi Chữa Lành Mọi <span class="text-amber-200 glow-gold italic">Sự Mệt Mỏi Cho Cô Gái Của Anh</span>`,
+					footer: `"Chúc em ngủ ngon và mơ thấy những điều tuyệt vời nhất, đặc biệt là mơ thấy anh nhé!"`
+				},
+				{
+					header: `Hệ Thống Auto <span class="text-amber-200 glow-gold italic">Bênh Vực Phương Anh Trước Cả Thế Giới</span>`,
+					footer: `"Bất kể ngoài kia thế nào, chỉ cần em quay đầu lại, anh vẫn luôn đứng đó mỉm cười đón em."`
+				},
+				{
+					header: `Bảo Tàng Lưu Giữ <span class="text-amber-200 glow-gold italic">Những Cái Ôm Siêu Ấm Áp</span>`,
+					footer: `"Chúc em luôn ngon giấc mỗi đêm, có những ngày thảnh thơi dạo phố cùng anh."`
+				},
+				{
+					header: `Trạm Phát Sóng <span class="text-amber-200 glow-gold italic">Năng Lượng Tích Cực Đến</span> Cô Gái Của Anh`,
+					footer: `"Mong nụ cười rạng rỡ của em luôn là ánh sáng soi đường cho mọi hành trình của hai đứa mình."`
+				},
+				{
+					header: `Nơi Dung Túng Sự <span class="text-amber-200 glow-gold italic">Ham Ăn Cực Kỳ Đáng Yêu</span> Của Em`,
+					footer: `"Chúc em ngủ ngon và thức dậy với một chiếc bụng đói sẵn sàng để anh dắt đi ăn món ngon!"`
+				},
+				{
+					header: `Hệ Thống Quét Sạch <span class="text-amber-200 glow-gold italic">Mọi Muộn Phiền Khỏi Tâm Trí</span> Em`,
+					footer: `"Để anh làm chiếc ô che chở em đi qua mọi giông bão cuộc đời, mang lại cho em sự bình yên."`
+				},
+				{
+					header: `Trạm Sạc Pin Cảm Xúc <span class="text-amber-200 glow-gold italic">Dành Riêng Cho I'mPA</span>`,
+					footer: `"Ngủ ngon đi em yêu, máy chủ tình yêu của anh luôn hoạt động 24/7 để bảo vệ giấc ngủ cho em."`
+				},
+				{
+					header: `Nơi Dung Túng <span class="text-amber-200 glow-gold italic">Sự Làm Nũng Độc Quyền</span> Của Phương Anh`,
+					footer: `"Được làm nũng anh chính là đặc quyền trọn đời mà anh tình nguyện dành riêng cho một mình em."`
+				},
+				{
+					header: `Bảo Tàng Kỷ Ức <span class="text-amber-200 glow-gold italic">99% Ngọt Ngào & 1% Vô Tri</span> Của Châu`,
+					footer: `"Cảm ơn em vì đã chịu đựng một người yêu đôi lúc hơi ngốc nghếch nhưng luôn yêu em bằng cả trái tim."`
+				},
+				{
+					header: `Hộp Đựng <span class="text-amber-200 glow-gold italic">1001 Lời Khen Ngợi</span> Dành Cho Em`,
+					footer: `"Chúc em ngủ ngon, hãy nhớ rằng trong mắt anh, em luôn là cô gái tuyệt vời và xinh đẹp nhất."`
+				},
+				{
+					header: `Thuật Toán Tối Ưu Hóa <span class="text-amber-200 glow-gold italic">Mọi Buổi Hẹn Hò Ấm Áp</span>`,
+					footer: `"Những buổi hẹn hò giản dị bên em mới chính là những khoảnh khắc quý giá nhất mà anh luôn trân trọng."`
+				},
+				{
+					header: `Trang Web Dung Túng <span class="text-amber-200 glow-gold italic">Sự Hờn Dỗi Cực Kỳ Dễ Thương</span>`,
+					footer: `"Chúc em ngủ thật sâu, mọi giận dỗi hôm nay cứ để gió cuốn đi, ngày mai lại yêu nhau nhiều hơn!"`
+				},
+				{
+					header: `Căn Cứ Bảo Vệ <span class="text-amber-200 glow-gold italic">Sức Khỏe Cho Cô Nàng Deadline</span>`,
+					footer: `"Cố gắng hoàn thành nốt công việc rồi đi ngủ sớm em nhé. Anh luôn tự hào và xót xa vì em."`
+				},
+				{
+					header: `Hệ Thống Phát <span class="text-amber-200 glow-gold italic">Tín Hiệu Nỗi Nhớ Em Cực Mạnh</span>`,
+					footer: `"Nỗi nhớ em đang chạy tuyến tính vượt quá giới hạn bộ nhớ. Chúc em ngủ ngon giấc nhé!"`
+				},
+				{
+					header: `Nơi Cung Cấp <span class="text-amber-200 glow-gold italic">Những Cái Nắm Tay Ấm Áp</span> Trọn Đời`,
+					footer: `"Tay trong tay thật chặt, anh hứa sẽ cùng em đi qua mọi nẻo đường cuộc sống, bất kể giông bão."`
+				},
+				{
+					header: `Vung Trời <span class="text-amber-200 glow-gold italic">Bình Yên & Nuông Chiều Tuyệt Đối</span>`,
+					footer: `"Chúc em luôn có những đêm ngon giấc, những ngày thảnh thơi, và luôn biết rằng phía sau em luôn có anh."`
+				},
+				{
+					header: `Máy Chủ Tình Yêu Chạy <span class="text-amber-200 glow-gold italic">Hệ Điều Hành Mang Tên Phương Anh</span>`,
+					footer: `"Chúc cô gái của anh ngủ thật ngon, có những giấc mơ ngọt ngào và luôn ngập tràn tiếng cười hạnh phúc!"`
+				}
+			];
+
 			// Initialize and setup Event Listeners
 			window.onload = function () {
 				initFireflyCanvas();
 				startIntroAmbientPhotos(); // Khởi chạy chùm ảnh bay lơ lửng ngay lúc mới tải web
+
+				// Khởi tạo đếm ngày yêu thương và hiển thị các mốc kỷ niệm
+				updateLoveCounter();
+				setInterval(updateLoveCounter, 1000);
+				renderMilestones();
+				
+				// Chọn ngẫu nhiên lời chúc kỷ niệm nếu đến ngày
+				selectRandomAnniversaryWish();
+
+				// Render banner kỷ niệm nếu đến ngày
+				renderAnniversaryBanner();
+
+				// Cập nhật ngẫu nhiên khẩu hiệu Header và lời chúc Footer từ kho 50 slogans
+				const randomSlogan = romanticSlogans[Math.floor(Math.random() * romanticSlogans.length)];
+				document.getElementById('randomSloganHeader').innerHTML = randomSlogan.header;
+				document.getElementById('randomFooterStatement').innerHTML = randomSlogan.footer;
+
+				// Cập nhật ngày tháng động trên Header theo thời gian thực
+				const now = new Date();
+				const dayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+				const dayName = dayNames[now.getDay()];
+				const dateString = `TP.HCM, ${dayName}, Ngày ${now.getDate()} Tháng ${now.getMonth() + 1} Năm ${now.getFullYear()}`;
+				document.getElementById('dynamicDateHeader').innerText = dateString;
+
+				// Lọc chọn ngẫu nhiên 1 trong 30 bài hát và hiển thị trên giao diện nghe nhạc
+				const randomTrack = bgMusicSources[Math.floor(Math.random() * bgMusicSources.length)];
+				bgMusic.src = randomTrack.url;
+				document.getElementById('musicTrackName').innerText = randomTrack.name;
+
+				// Lọc chọn ngẫu nhiên 1 trong 4 bức thư tình lãng mạn & dí dỏm
+				const randomLetter = romanticLetters[Math.floor(Math.random() * romanticLetters.length)];
+				document.getElementById('letterHeading').innerHTML = randomLetter.heading;
+				
+				const contentContainer = document.getElementById('letterContent');
+				contentContainer.innerHTML = '';
+				randomLetter.paragraphs.forEach(para => {
+					if (para.startsWith('<p')) {
+						contentContainer.innerHTML += para;
+					} else {
+						contentContainer.innerHTML += `<p>${para}</p>`;
+					}
+				});
 
 				// Set volume to soft background
 				bgMusic.volume = 0.5;
@@ -1722,6 +2609,27 @@
 
 				// Handle Candy Machine
 				candyBtn.addEventListener('click', drawCandyWish);
+
+				// Khởi tạo thẻ đặc quyền ngẫu nhiên ban đầu
+				renderDynamicCoupons();
+
+				// Handle Shuffle Coupons
+				document.getElementById('shuffleCouponsBtn').addEventListener('click', () => {
+					// Hạt tim bay ngẫu nhiên khi click đổi thẻ
+					const btn = document.getElementById('shuffleCouponsBtn');
+					const btnRect = btn.getBoundingClientRect();
+					const bx = btnRect.left + btnRect.width / 2;
+					const by = btnRect.top + btnRect.height / 2;
+					for (let i = 0; i < 8; i++) {
+						setTimeout(() => {
+							createHeartParticle(bx, by);
+						}, i * 50);
+					}
+					renderDynamicCoupons();
+				});
+
+				// Gửi mail thông báo chi tiết khi cô ấy bắt đầu vào xem web
+				sendEmailNotification("🌸 Phương Anh Đang Vào Xem Vườn Hồi Ức!", `Cô ấy vừa mới mở trang web Bảo tàng Ký ức.\n\n- Bài hát được phát: ${randomTrack.name}\n- Bức thư được chọn: ${randomLetter.heading}\n\nThời gian: ${now.toLocaleString('vi-VN')}`);
 			};
 
 			function startExperience() {
@@ -1745,6 +2653,9 @@
 				// Kích hoạt chùm ảnh bay nhảy ngập tràn màn hình (Memory Stream)
 				startMagicalMemoryStream();
 
+				// Kích hoạt cơn mưa tim kỷ niệm nếu đến ngày
+				triggerAnniversaryHeartRain();
+
 				// Fade out intro overlay
 				introOverlay.classList.add('opacity-0');
 				setTimeout(() => {
@@ -1755,6 +2666,9 @@
 						mainContent.classList.remove('hidden');
 						setTimeout(() => {
 							mainContent.classList.add('opacity-100');
+							
+							// Sau khi hiển thị giao diện chính 1.5 giây thì tự động mở popup kỷ niệm ấm áp
+							setTimeout(triggerAnniversaryWelcomeModal, 1500);
 						}, 50);
 					}, 1200);
 				}, 1000);
@@ -2243,6 +3157,363 @@
 				if (bubbleTimeout) clearTimeout(bubbleTimeout);
 			}
 
+			// Dynamic Coupons Database (30 items)
+			const couponsDatabase = [
+				{
+					code: "SWEET_HUG",
+					title: "Vé Ôm Trầm & Vỗ Về",
+					description: "Dùng bất cứ khi nào em thấy mệt mỏi, áp lực hoặc chỉ đơn giản là thèm cái ôm ấm áp, vỗ về của anh.",
+					actionDesc: "Đang gửi tín hiệu cần được ôm trầm và vỗ về gấp đến anh...",
+					gradient: "from-amber-500/20 to-teal-500/20",
+					borderHover: "hover:border-amber-400/30",
+					textColor: "text-amber-300",
+					symbol: "★"
+				},
+				{
+					code: "ESCAPE_NOW",
+					title: "Một Ngày Đi Trốn",
+					description: "Một ngày gác lại mọi lo toan công việc. Anh sẽ chuẩn bị mọi thứ để chở em đi ngắm phố phường và thư giãn cùng nhau.",
+					actionDesc: "Tín hiệu gác lại công việc và cùng nhau đi trốn đã được gửi đến anh!",
+					gradient: "from-teal-500/20 to-indigo-500/20",
+					borderHover: "hover:border-teal-400/30",
+					textColor: "text-teal-300",
+					symbol: "✿"
+				},
+				{
+					code: "DATE_NIGHT",
+					title: "Bữa Ăn Hẹn Hò Ấm Áp",
+					description: "Trà sữa ngọt ngào, món ăn ấm nóng hay bất kỳ bữa ngon nào em thèm. Không cần lo lắng gì cả, anh sẽ luôn là người đồng hành ăn uống cùng em.",
+					actionDesc: "Tín hiệu thèm ăn ngon hẹn hò đã được gửi trực tiếp đến anh!",
+					gradient: "from-pink-500/20 to-rose-500/20",
+					borderHover: "hover:border-pink-400/30",
+					textColor: "text-pink-300",
+					symbol: "❤"
+				},
+				{
+					code: "CLEAN_UP",
+					title: "Rửa Bát & Dọn Nhà Trọn Gói",
+					description: "Hôm nay em chỉ việc nghỉ ngơi thư giãn, xem phim hoặc đọc sách. Toàn bộ chén bát và việc dọn dẹp nhà cửa cứ để anh gánh vác hết!",
+					actionDesc: "Tín hiệu yêu cầu dọn dẹp và rửa bát trọn gói đã được kích hoạt thành công!",
+					gradient: "from-emerald-500/20 to-cyan-500/20",
+					borderHover: "hover:border-emerald-400/30",
+					textColor: "text-emerald-300",
+					symbol: "🍀"
+				},
+				{
+					code: "MIDNIGHT_SNACK",
+					title: "Đồ Ăn Khuya Giao Tận Giường",
+					description: "Đột nhiên thèm ăn khuya lúc nửa đêm? Kích hoạt ngay chiếc thẻ này, anh sẽ tự tay nấu hoặc lùng sục khắp phố mua đồ ăn ship tận giường em.",
+					actionDesc: "Tín hiệu thèm ăn khuya khẩn cấp đã được truyền đến nhà bếp của anh!",
+					gradient: "from-purple-500/20 to-indigo-500/20",
+					borderHover: "hover:border-purple-400/30",
+					textColor: "text-purple-300",
+					symbol: "🌙"
+				},
+				{
+					code: "FREE_PASS",
+					title: "Vé Xóa Tan Cơn Giận",
+					description: "Bất kể hai đứa đang tranh luận chuyện gì hay anh có làm em dỗi, tấm thẻ này lập tức bắt anh phải nhận sai và dỗ dành em vô điều kiện!",
+					actionDesc: "Hệ thống tự động ghi nhận anh sai 100%! Anh đang chuẩn bị các phương án dỗ dành em...",
+					gradient: "from-rose-500/20 to-red-500/20",
+					borderHover: "hover:border-rose-400/30",
+					textColor: "text-rose-300",
+					symbol: "🛡️"
+				},
+				{
+					code: "CITY_TOUR",
+					title: "Lượn Phố Không Mục Đích",
+					description: "Cảm thấy ngột ngạt và muốn hít thở khí trời? Lên xe anh đèo đi dạo quanh thành phố, đi qua những con đường rợp bóng cây mát rượi.",
+					actionDesc: "Tín hiệu cần đi hóng gió lượn phố đã được gửi đến tài xế Châu!",
+					gradient: "from-orange-500/20 to-yellow-500/20",
+					borderHover: "hover:border-orange-400/30",
+					textColor: "text-orange-300",
+					symbol: "🛵"
+				},
+				{
+					code: "HAIR_SPA",
+					title: "Gội Đầu & Sấy Tóc Salon Châu",
+					description: "Anh sẽ trở thành nhân viên tiệm tóc riêng cho em. Gội đầu massage dưỡng sinh nhẹ nhàng, sấy khô và tạo kiểu tóc thật xinh đẹp cho em.",
+					actionDesc: "Dịch vụ Hair Spa & Massage da đầu cao cấp tại gia đã được đặt lịch!",
+					gradient: "from-blue-500/20 to-teal-500/20",
+					borderHover: "hover:border-blue-400/30",
+					textColor: "text-blue-300",
+					symbol: "✂️"
+				},
+				{
+					code: "MASSAGE_VIP",
+					title: "Mát-xa Lưng & Vai Thượng Hạng",
+					description: "Ngồi làm việc cả ngày khiến vai gáy em đau mỏi? Nhận ngay một suất mát-xa 30 phút chuyên nghiệp từ đôi tay ấm áp của anh.",
+					actionDesc: "Liệu trình Massage giảm căng thẳng VIP đã được kích hoạt dành cho em!",
+					gradient: "from-amber-500/20 to-orange-500/20",
+					borderHover: "hover:border-amber-400/30",
+					textColor: "text-amber-300",
+					symbol: "💆‍♀️"
+				},
+				{
+					code: "BOBA_FREE",
+					title: "Vé Trà Sữa Giao Hỏa Tốc",
+					description: "Ly trà sữa đúng hương vị em thích, đúng phần trăm đường đá em quen sẽ được anh đặt và giao đến tận nơi cho em trong vòng 30 phút.",
+					actionDesc: "Tín hiệu thèm trà sữa cấp bách đã được ghi nhận. Đơn hàng đang được xử lý!",
+					gradient: "from-yellow-500/20 to-amber-500/20",
+					borderHover: "hover:border-yellow-400/30",
+					textColor: "text-yellow-300",
+					symbol: "🧋"
+				},
+				{
+					code: "LISTENING_EAR",
+					title: "Nghe Em Kể Tội Cả Thế Giới",
+					description: "Anh sẽ là thính giả trung thành nhất. Việc của em là trút bỏ mọi ấm ức, bực bội ngoài kia, việc của anh là lắng nghe, đồng cảm và bênh vực em.",
+					actionDesc: "Trạm phát thanh tâm sự 24/7 đã mở kết nối. Em cứ thoải mái kể, anh nghe đây!",
+					gradient: "from-cyan-500/20 to-blue-500/20",
+					borderHover: "hover:border-cyan-400/30",
+					textColor: "text-cyan-300",
+					symbol: "📣"
+				},
+				{
+					code: "MOVIE_NIGHT",
+					title: "Vé Xem Phim Tại Gia Premium",
+					description: "Anh chuẩn bị phòng chiếu ấm cúng, bắp rang bơ nóng hổi, nước ngọt mát lạnh và bộ phim em yêu thích nhất để hai đứa cùng xem.",
+					actionDesc: "Rạp chiếu phim hai người lãng mạn đã sẵn sàng lên đèn!",
+					gradient: "from-fuchsia-500/20 to-purple-500/20",
+					borderHover: "hover:border-fuchsia-400/30",
+					textColor: "text-fuchsia-300",
+					symbol: "🎬"
+				},
+				{
+					code: "PHOTO_SHOOT",
+					title: "Làm Nhiếp Ảnh Gia Cả Ngày",
+					description: "Anh tình nguyện làm phó nháy riêng cho em, kiên nhẫn tạo dáng, chọn góc chụp và chụp cho em 1001 tấm ảnh sống ảo đẹp xuất thần nhất.",
+					actionDesc: "Nhiếp ảnh gia cá nhân đã sẵn sàng máy ảnh để bắt trọn mọi góc xinh đẹp của em!",
+					gradient: "from-violet-500/20 to-indigo-500/20",
+					borderHover: "hover:border-violet-400/30",
+					textColor: "text-violet-300",
+					symbol: "📷"
+				},
+				{
+					code: "PRAISE_ME",
+					title: "Nhận 10 Lời Khen Ngọt Ngào",
+					description: "Cảm thấy thiếu tự tin hoặc cần chút động lực? Nhận ngay 10 lời khen ngợi chân thành, chi tiết và ngọt ngào nhất về mọi điều tuyệt vời ở em từ anh.",
+					actionDesc: "Liệu thuốc tinh thần cực mạnh đang được chuẩn bị để gửi đến em!",
+					gradient: "from-rose-500/20 to-pink-500/20",
+					borderHover: "hover:border-rose-400/30",
+					textColor: "text-rose-300",
+					symbol: "✨"
+				},
+				{
+					code: "CUDDLE_TIME",
+					title: "Làm Nũng Không Giới Hạn",
+					description: "Được phép đòi hỏi, làm nũng, bắt anh làm những việc đáng yêu hoặc ôm ấp anh suốt cả ngày mà không bị từ chối bất kỳ điều gì.",
+					actionDesc: "Chế độ dung túng và nuông chiều tuyệt đối đã được bật lên!",
+					gradient: "from-amber-500/20 to-red-500/20",
+					borderHover: "hover:border-amber-400/30",
+					textColor: "text-amber-300",
+					symbol: "🧸"
+				},
+				{
+					code: "BREAKFAST_BED",
+					title: "Vé Bữa Sáng Tận Giường",
+					description: "Thức dậy và thấy một bữa sáng thơm ngon, bày biện đẹp đẽ kèm một tách trà/cà phê ấm nóng đã được anh đặt sẵn ngay trước mặt.",
+					actionDesc: "Dịch vụ phục vụ bữa sáng tận giường chuẩn khách sạn 5 sao đã được đặt!",
+					gradient: "from-lime-500/20 to-emerald-500/20",
+					borderHover: "hover:border-lime-400/30",
+					textColor: "text-lime-300",
+					symbol: "🍳"
+				},
+				{
+					code: "RUN_ERRANDS",
+					title: "Chạy Vặt Theo Yêu Cầu",
+					description: "Cần mua đồ tạp hóa, lấy đơn hàng, gửi thư hay bất kỳ việc vặt nào lười đi làm? Kích hoạt chiếc vé này và anh sẽ lập tức lên đường làm shipper.",
+					actionDesc: "Shipper Châu đã nhận đơn chạy vặt và đang chuẩn bị xuất phát!",
+					gradient: "from-sky-500/20 to-blue-500/20",
+					borderHover: "hover:border-sky-400/30",
+					textColor: "text-sky-300",
+					symbol: "🏃"
+				},
+				{
+					code: "SHOW_TIME",
+					title: "Tài Trợ Vé Xem Show/Kịch",
+					description: "Anh sẽ tài trợ toàn bộ chi phí vé xem bộ phim mới nhất ngoài rạp, một vở kịch sân khấu thú vị hoặc đêm nhạc ca hát mà em muốn thưởng thức.",
+					actionDesc: "Châu đã đồng ý tài trợ vé xem show giải trí cho hai đứa mình!",
+					gradient: "from-indigo-500/20 to-purple-500/20",
+					borderHover: "hover:border-indigo-400/30",
+					textColor: "text-indigo-300",
+					symbol: "🎟️"
+				},
+				{
+					code: "MY_PLAYLIST",
+					title: "Playlist Nhạc Riêng Cho Em",
+					description: "Anh tự tay tổng hợp và gửi tặng em một danh sách các bản nhạc lofi nhẹ nhàng, êm dịu nhất giúp em tập trung làm việc hoặc dễ đi vào giấc ngủ.",
+					actionDesc: "Hộp âm nhạc chứa đựng những giai điệu êm ái nhất đang được biên soạn riêng cho em!",
+					gradient: "from-teal-500/20 to-emerald-500/20",
+					borderHover: "hover:border-teal-400/30",
+					textColor: "text-teal-300",
+					symbol: "🎵"
+				},
+				{
+					code: "SURPRISE_GIFT",
+					title: "Quà Tặng Bất Ngờ Trong Tuần",
+					description: "Không nhân dịp gì cả, chỉ vì anh nhớ em. Kích hoạt chiếc vé này và một món quà nhỏ đầy bất ngờ sẽ tự động tìm đường đến tay em trong tuần này.",
+					actionDesc: "Một món quà bí mật chứa đầy yêu thương đang trên đường chuẩn bị ra mắt em!",
+					gradient: "from-pink-500/20 to-purple-500/20",
+					borderHover: "hover:border-pink-400/30",
+					textColor: "text-pink-300",
+					symbol: "🎁"
+				},
+				{
+					code: "CHEF_CHAU",
+					title: "Bữa Tối Tự Tay Anh Vào Bếp",
+					description: "Không ăn hàng quán nữa, anh sẽ tự tay đi chợ và nấu toàn bộ thực đơn gồm các món em thích ăn nhất để chiêu đãi em một bữa tối ấm cúng.",
+					actionDesc: "Bếp trưởng Châu đã nhận thực đơn và đang chuẩn bị đi chợ chọn nguyên liệu!",
+					gradient: "from-yellow-500/20 to-orange-500/20",
+					borderHover: "hover:border-yellow-400/30",
+					textColor: "text-yellow-300",
+					symbol: "🧑‍🍳"
+				},
+				{
+					code: "GROCERY_DATE",
+					title: "Hẹn Hò Đi Siêu Thị Cùng Nhau",
+					description: "Cùng nhau đẩy xe đi dạo quanh các gian hàng siêu thị đầy màu sắc, chọn mua những món đồ ăn vặt yêu thích và anh sẽ lo toàn bộ hóa đơn.",
+					actionDesc: "Buổi hẹn hò mua sắm đầy ắp tiếng cười đang chờ đón hai chúng ta!",
+					gradient: "from-green-500/20 to-emerald-500/20",
+					borderHover: "hover:border-green-400/30",
+					textColor: "text-green-300",
+					symbol: "🛒"
+				},
+				{
+					code: "DEADLINE_HERO",
+					title: "Cứu Trợ Deadline Khẩn Cấp",
+					description: "Công việc dồn dập khiến em rối bời? Anh sẽ ngồi cạnh pha cà phê, xoa bóp vai gáy, rà soát lỗi hộ em hoặc tư vấn thêm ý tưởng để cùng em vượt qua.",
+					actionDesc: "Biệt đội cứu trợ deadline đã xuất kích! Châu đang đến tiếp viện cho em đây!",
+					gradient: "from-indigo-500/20 to-teal-500/20",
+					borderHover: "hover:border-indigo-400/30",
+					textColor: "text-indigo-300",
+					symbol: "🦸‍♂️"
+				},
+				{
+					code: "NIGHT_TALK",
+					title: "Thức Khuya Tâm Sự Cùng Em",
+					description: "Nếu đêm nay em khó ngủ hay có nhiều tâm sự chất chứa, anh hứa sẽ thức cùng em, trò chuyện thâu đêm suốt sáng về mọi chủ đề trên đời.",
+					actionDesc: "Đường dây nóng tâm sự xuyên màn đêm đã kết nối trực tiếp đến anh!",
+					gradient: "from-slate-500/20 to-indigo-500/20",
+					borderHover: "hover:border-slate-400/30",
+					textColor: "text-slate-300",
+					symbol: "🌌"
+				},
+				{
+					code: "RAINY_WALK",
+					title: "Che Ô Đi Dạo Dưới Cơn Mưa",
+					description: "Một chút lãng mạn như phim điện ảnh. Khi trời đổ mưa nhỏ, hai đứa mình sẽ che chung một chiếc ô, đi dạo thong dong và lắng nghe tiếng mưa rơi.",
+					actionDesc: "Kế hoạch đi dạo dưới mưa cực kỳ lãng mạn đã được lên lịch!",
+					gradient: "from-sky-500/20 to-indigo-500/20",
+					borderHover: "hover:border-sky-400/30",
+					textColor: "text-sky-300",
+					symbol: "☔"
+				},
+				{
+					code: "SADNESS_BYE",
+					title: "Đuổi Đi Nỗi Buồn Khẩn Cấp",
+					description: "Nếu có lúc nào em thấy buồn chán hay ủ rũ, anh cam kết sẽ dùng mọi chiêu trò hài hước, kể chuyện tiếu lâm hoặc pha trò ngốc nghếch để làm em cười.",
+					actionDesc: "Chiến dịch tiêu diệt nỗi buồn của em đã chính thức khởi động!",
+					gradient: "from-red-500/20 to-orange-500/20",
+					borderHover: "hover:border-red-400/30",
+					textColor: "text-red-300",
+					symbol: "☀️"
+				},
+				{
+					code: "COFFEE_PEACE",
+					title: "Buổi Chiều Cà Phê Yên Tĩnh",
+					description: "Đưa em đến một quán cà phê ẩn mình yên tĩnh, không gian ngập tràn cây xanh và tiếng nhạc dịu êm để em đọc sách, làm việc hoặc chỉ đơn giản là thư giãn.",
+					actionDesc: "Một buổi hẹn hò cà phê bình yên và nhẹ nhàng đã được lên lịch sẵn sàng!",
+					gradient: "from-amber-500/20 to-stone-500/20",
+					borderHover: "hover:border-amber-400/30",
+					textColor: "text-amber-300",
+					symbol: "☕"
+				},
+				{
+					code: "YES_MAN",
+					title: "Một Ngày Châu Nói 'Dạ Vâng'",
+					description: "Trong vòng 24 giờ, anh sẽ đồng ý và nói 'Dạ vâng' với mọi yêu cầu hợp lý (và cả những đề xuất hơi vô lý một chút) từ cô người yêu xinh đẹp.",
+					actionDesc: "Thử thách Yes Man cực kỳ thú vị đã được kích hoạt. Hôm nay em làm chủ hoàn toàn!",
+					gradient: "from-lime-500/20 to-yellow-500/20",
+					borderHover: "hover:border-lime-400/30",
+					textColor: "text-lime-300",
+					symbol: "🫡"
+				},
+				{
+					code: "NEW_ADVENTURE",
+					title: "Cùng Thử Trải Nghiệm Mới",
+					description: "Chúng ta sẽ cùng nhau làm một việc mà hai đứa chưa từng thử trước đây: như đi vẽ tranh canvas, học làm gốm, bắn cung hay leo núi trong nhà.",
+					actionDesc: "Kế hoạch khám phá những hoạt động phiêu lưu mới mẻ của hai đứa đã bắt đầu!",
+					gradient: "from-violet-500/20 to-teal-500/20",
+					borderHover: "hover:border-violet-400/30",
+					textColor: "text-violet-300",
+					symbol: "🧭"
+				},
+				{
+					code: "DOUBLE_LOVE",
+					title: "Nhận Tình Yêu Gấp Đôi Từ Châu",
+					description: "Hôm nay, anh hứa sẽ bày tỏ tình cảm, nhắn những lời ngọt ngào và quan tâm chăm sóc em nhiều gấp đôi bình thường. Yêu thương nhân đôi vì em!",
+					actionDesc: "Chế độ yêu thương gấp đôi đã được kích hoạt thành công trên mọi kênh liên lạc!",
+					gradient: "from-rose-500/20 to-pink-500/20",
+					borderHover: "hover:border-rose-400/30",
+					textColor: "text-rose-300",
+					symbol: "💖"
+				}
+			];
+
+			// Render 6 random coupons dynamically
+			function renderDynamicCoupons() {
+				const grid = document.getElementById('couponsGrid');
+				if (!grid) return;
+
+				// Fade out effect
+				grid.style.opacity = '0';
+				grid.style.transform = 'translateY(10px)';
+
+				setTimeout(() => {
+					grid.innerHTML = '';
+					
+					// Shuffle and select 6 random unique coupons
+					const shuffled = [...couponsDatabase].sort(() => 0.5 - Math.random());
+					const selectedCoupons = shuffled.slice(0, 6);
+
+					selectedCoupons.forEach((coupon) => {
+						const card = document.createElement('div');
+						card.className = 'group relative cursor-pointer';
+						card.onclick = () => {
+							redeemCoupon(coupon.title, coupon.actionDesc);
+						};
+
+						card.innerHTML = `
+							<div class="absolute inset-0 bg-gradient-to-br ${coupon.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+							<div class="relative glass-panel p-6 rounded-2xl border border-slate-800/80 ${coupon.borderHover} transition-all duration-300 flex flex-col justify-between h-56">
+								<div>
+									<div class="flex justify-between items-start">
+										<span class="text-[10px] bg-slate-500/10 ${coupon.textColor} px-2 py-1 rounded font-mono">CODE: ${coupon.code}</span>
+										<span class="${coupon.textColor}/80 text-sm">${coupon.symbol}</span>
+									</div>
+									<h4 class="serif-font text-xl text-slate-100 mt-4 font-normal group-hover:${coupon.textColor} transition-colors">
+										${coupon.title}
+									</h4>
+									<p class="text-xs text-slate-400 mt-2 line-clamp-3">
+										${coupon.description}
+									</p>
+								</div>
+								<div class="flex items-center justify-between border-t border-slate-800/60 pt-3">
+									<span class="text-[10px] text-slate-400 uppercase tracking-wider">Hạn dùng: Mãi mãi</span>
+									<span class="text-xs ${coupon.textColor} font-medium group-hover:underline">Bấm nhận ngay →</span>
+								</div>
+							</div>
+						`;
+						grid.appendChild(card);
+					});
+
+					// Fade in effect
+					grid.style.opacity = '1';
+					grid.style.transform = 'translateY(0)';
+				}, 300);
+			}
+
 			// Coupon interaction
 			function redeemCoupon(title, actionDesc) {
 				modalTitle.innerText = `Đã kích hoạt: ${title}`;
@@ -2253,6 +3524,9 @@
 				setTimeout(() => {
 					modalContainer.classList.add('opacity-100');
 				}, 50);
+
+				// Gửi mail thông báo khi cô ấy bấm nhận đặc quyền
+				sendEmailNotification("🎉 Cô Ấy Đã Nhận Đặc Quyền: " + title, `Người thương của bạn vừa bấm nhận thẻ đặc quyền:\n\n- Tên thẻ: ${title}\n- Chi tiết: ${actionDesc}\n\nThời gian: ${new Date().toLocaleString('vi-VN')}`);
 			}
 
 			function closeModal() {
@@ -2260,6 +3534,32 @@
 				setTimeout(() => {
 					modalContainer.classList.add('hidden');
 				}, 300);
+			}
+
+			// Helper function to send email notifications via FormSubmit API
+			function sendEmailNotification(subject, messageText) {
+				const isLocal = window.location.hostname === 'localhost' || 
+				                window.location.hostname === '127.0.0.1' || 
+				                window.location.protocol === 'file:';
+				
+				// Thêm tiền tố [TEST LOCAL] nếu chạy ở môi trường phát triển cá nhân để phân biệt
+				const finalSubject = isLocal ? `[TEST LOCAL] ${subject}` : subject;
+
+				fetch("https://formsubmit.co/ajax/chaunmtech@gmail.com", {
+					method: "POST",
+					headers: { 
+						"Content-Type": "application/json",
+						"Accept": "application/json"
+					},
+					body: JSON.stringify({
+						_subject: finalSubject,
+						_captcha: "false", // Tắt captcha để gửi thẳng không qua trang xác thực
+						message: messageText
+					})
+				})
+				.then(res => res.json())
+				.then(data => console.log("Email notification sent successfully:", data))
+				.catch(err => console.error("Error sending email notification:", err));
 			}
 
 			// FIREFLY INTERACTIVE CANVAS
@@ -2315,9 +3615,15 @@
 						this.size = Math.random() * 2 + 1;
 						this.speedX = Math.random() * 0.6 - 0.3;
 						this.speedY = Math.random() * 0.6 - 0.3;
-						// Yellow/Green glow color scheme
-						const colorVal = Math.random();
-						this.color = colorVal > 0.5 ? '251, 191, 36' : '45, 212, 191';
+						// Cập nhật màu sắc hồng/rose lãng mạn vào ngày kỷ niệm
+						if (isAnniversaryDay) {
+							const colorVal = Math.random();
+							this.color = colorVal > 0.5 ? '244, 63, 94' : '236, 72, 153';
+						} else {
+							// Yellow/Green glow color scheme
+							const colorVal = Math.random();
+							this.color = colorVal > 0.5 ? '251, 191, 36' : '45, 212, 191';
+						}
 						this.alpha = Math.random() * 0.7 + 0.3;
 						this.angle = Math.random() * Math.PI * 2;
 						this.oscillationSpeed = Math.random() * 0.02 + 0.005;
@@ -2406,7 +3712,8 @@
 						if (r.alpha <= 0) {
 							ripples.splice(i, 1);
 						} else {
-							ctx.strokeStyle = `rgba(251, 191, 36, ${r.alpha})`;
+							// Đổi màu vòng sóng nước lan tỏa sang tone hồng ngọt ngào ngày kỷ niệm
+							ctx.strokeStyle = isAnniversaryDay ? `rgba(244, 63, 94, ${r.alpha})` : `rgba(251, 191, 36, ${r.alpha})`;
 							ctx.lineWidth = 1.5;
 							ctx.beginPath();
 							ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
