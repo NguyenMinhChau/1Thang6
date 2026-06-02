@@ -2628,8 +2628,6 @@
 					renderDynamicCoupons();
 				});
 
-				// Gửi mail thông báo chi tiết khi cô ấy bắt đầu vào xem web
-				sendEmailNotification("🌸 Phương Anh Đang Vào Xem Vườn Hồi Ức!", `Cô ấy vừa mới mở trang web Bảo tàng Ký ức.\n\n- Bài hát được phát: ${randomTrack.name}\n- Bức thư được chọn: ${randomLetter.heading}\n\nThời gian: ${now.toLocaleString('vi-VN')}`);
 			};
 
 			function startExperience() {
@@ -3525,8 +3523,6 @@
 					modalContainer.classList.add('opacity-100');
 				}, 50);
 
-				// Gửi mail thông báo khi cô ấy bấm nhận đặc quyền
-				sendEmailNotification("🎉 Cô Ấy Đã Nhận Đặc Quyền: " + title, `Người thương của bạn vừa bấm nhận thẻ đặc quyền:\n\n- Tên thẻ: ${title}\n- Chi tiết: ${actionDesc}\n\nThời gian: ${new Date().toLocaleString('vi-VN')}`);
 			}
 
 			function closeModal() {
@@ -3536,31 +3532,6 @@
 				}, 300);
 			}
 
-			// Helper function to send email notifications via FormSubmit API
-			function sendEmailNotification(subject, messageText) {
-				const isLocal = window.location.hostname === 'localhost' || 
-				                window.location.hostname === '127.0.0.1' || 
-				                window.location.protocol === 'file:';
-				
-				// Thêm tiền tố [TEST LOCAL] nếu chạy ở môi trường phát triển cá nhân để phân biệt
-				const finalSubject = isLocal ? `[TEST LOCAL] ${subject}` : subject;
-
-				fetch("https://formsubmit.co/ajax/chaunmtech@gmail.com", {
-					method: "POST",
-					headers: { 
-						"Content-Type": "application/json",
-						"Accept": "application/json"
-					},
-					body: JSON.stringify({
-						_subject: finalSubject,
-						_captcha: "false", // Tắt captcha để gửi thẳng không qua trang xác thực
-						message: messageText
-					})
-				})
-				.then(res => res.json())
-				.then(data => console.log("Email notification sent successfully:", data))
-				.catch(err => console.error("Error sending email notification:", err));
-			}
 
 			// FIREFLY INTERACTIVE CANVAS
 			function initFireflyCanvas() {
